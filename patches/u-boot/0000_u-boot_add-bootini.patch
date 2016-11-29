@@ -20,7 +20,7 @@ diff -Nur a/common/cmd_bootini.c b/common/cmd_bootini.c
 +
 +#include <common.h>
 +#include <command.h>
-+#include <asm/errno.h>
++#include <errno.h>
 +#include <malloc.h>
 +#include <linux/ctype.h>    /* isalpha, isdigit */
 +#include <linux/sizes.h>

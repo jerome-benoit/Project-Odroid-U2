@@ -38,8 +38,8 @@
   # Bootloader to use (syslinux / u-boot / atv-bootloader / bcm2835-bootloader)
     BOOTLOADER="u-boot"
 
-  # u-boot version to use (default)
-    UBOOT_VERSION="default"
+  # u-boot version to use (default to upstream)
+    UBOOT_VERSION="upstream"
 
   # Configuration for u-boot
     UBOOT_CONFIG="odroid_defconfig"
@@ -58,7 +58,7 @@
 
   # Kernel to use. values can be:
   # default:  default mainline kernel
-    LINUX=""
+    LINUX="mfc-3.8"
 
 ################################################################################
 # setup build defaults
@@ -89,8 +89,8 @@
   # OpenGL(X) implementation to use (no / mesa)
     OPENGL="no"
 
-  # OpenGL-ES implementation to use (no / bcm2835-driver / gpu-viv-bin-mx6q / opengl-meson6)
-    OPENGLES="hk-mali"
+  # OpenGL-ES implementation to use (no / bcm2835-driver / gpu-viv-bin-mx6q / opengl-mali / opengl-meson6)
+    OPENGLES="opengl-mali"
 
   # include uvesafb support (yes / no)
     UVESAFB_SUPPORT="no"
@@ -121,7 +121,7 @@
   # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
   # Space separated list is supported,
   # e.g. FIRMWARE="dvb-firmware misc-firmware wlan-firmware"
-    FIRMWARE="misc-firmware wlan-firmware dvb-firmware"
+    FIRMWARE="misc-firmware wlan-firmware dvb-firmware samsung-firmware"
 
   # build and install ATV IR remote support (yes / no)
     ATVCLIENT_SUPPORT="no"
@@ -151,16 +151,5 @@
   # kernel image name
     KERNEL_NAME="kernel.img"
 
-  # Distribution Specific source location : Additional
-    ODROID_MIRROR="http://freeweb.mine.nu/zalaare"
-
   # set the start of the system partition during the mkimage process
     SYSTEM_PART_START=3072
-
-  # set the addon server
-    ADDON_SERVER_URL="https://raw.github.com/zalaare/OpenELEC-Odroid-Addons"
-
-  # set the addon dirs
-    ADDON_PATH="$ADDON_VERSION/Odroid/U2"
-    ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
-
