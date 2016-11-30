@@ -1,0 +1,516 @@
+diff --git a/packages/devel/libcec/package.mk b/packages/devel/libcec/package.mk
+index 08ecc5d..e85b8b9 100644
+--- a/packages/devel/libcec/package.mk
++++ b/packages/devel/libcec/package.mk
+@@ -57,6 +57,12 @@ else
+   PKG_CMAKE_OPTS_TARGET="$PKG_CMAKE_OPTS_TARGET -DHAVE_AOCEC_API=0 -DHAVE_AMLOGIC_API=0"
+ fi
+ 
++if [ "$KODIPLAYER_DRIVER" = "odroid-mfc" ]; then
++  PKG_CMAKE_OPTS_TARGET="$PKG_CMAKE_OPTS_TARGET -DHAVE_EXYNOS_API=1"
++else
++  PKG_CMAKE_OPTS_TARGET="$PKG_CMAKE_OPTS_TARGET -DHAVE_EXYNOS_API=0"
++fi
++
+ pre_configure_target() {
+   if [ "$KODIPLAYER_DRIVER" = "bcm2835-firmware" ]; then
+     export CXXFLAGS="$CXXFLAGS \
+diff --git a/packages/devel/libcec/udev.d/50-cec.rules b/packages/devel/libcec/udev.d/50-cec.rules
+new file mode 100644
+index 0000000..fd510c7
+--- /dev/null
++++ b/packages/devel/libcec/udev.d/50-cec.rules
+@@ -0,0 +1 @@
++KERNEL=="CEC", MODE="0660"
+\ No newline at end of file
+diff --git a/packages/graphics/libdrm/package.mk b/packages/graphics/libdrm/package.mk
+index 2044a32..7fdd26b 100644
+--- a/packages/graphics/libdrm/package.mk
++++ b/packages/graphics/libdrm/package.mk
+@@ -36,6 +36,7 @@ get_graphicdrivers
+ 
+ DRM_CONFIG="--disable-libkms --disable-intel --disable-radeon --disable-amdgpu"
+ DRM_CONFIG="$DRM_CONFIG --disable-nouveau --disable-vmwgfx"
++DRM_CONFIG="$DRM_CONFIG --disable-exynos-experimental-api"
+ 
+ for drv in $GRAPHIC_DRIVERS; do
+   [ "$drv" = "i915" -o "$drv" = "i965" ] && \
+@@ -50,6 +51,10 @@ for drv in $GRAPHIC_DRIVERS; do
+   [ "$drv" = "vmware" ] && \
+     DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-libkms/enable-libkms/'` && \
+     DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-vmwgfx/enable-vmwgfx/'`
++
++  [ "$drv" = "armsoc" ] && \
++    DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-libkms/enable-libkms/'` && \
++    DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-exynos/enable-exynos/'`
+ done
+ 
+ PKG_CONFIGURE_OPTS_TARGET="--disable-udev \
+diff --git a/packages/graphics/mesa/package.mk b/packages/graphics/mesa/package.mk
+index f41b982..fb120ea 100644
+--- a/packages/graphics/mesa/package.mk
++++ b/packages/graphics/mesa/package.mk
+@@ -113,7 +113,7 @@ pre_configure_target() {
+ }
+ 
+ post_makeinstall_target() {
+-  # rename and relink for cooperate with nvidia drivers
++  # rename and relink to cooperate with nvidia drivers
+     rm -rf $INSTALL/usr/lib/libGL.so
+     rm -rf $INSTALL/usr/lib/libGL.so.1
+     ln -sf libGL.so.1 $INSTALL/usr/lib/libGL.so
+diff --git a/packages/graphics/opengl-mali/package.mk b/packages/graphics/opengl-mali/package.mk
+index bf3bffb..86ba81c 100644
+--- a/packages/graphics/opengl-mali/package.mk
++++ b/packages/graphics/opengl-mali/package.mk
+@@ -17,13 +17,21 @@
+ ################################################################################
+ 
+ PKG_NAME="opengl-mali"
+-PKG_VERSION="20130520"
++PKG_VERSION="4412_r5p0"
++PKG_DEPENDS_TARGET="toolchain"
++if [ "$DISPLAYSERVER" = "x11" ]; then
++  PKG_VERSION="${PKG_VERSION}_x11"
++  PKG_URL="http://people.piment-noir.org/~fraggle/download/odroid/$PKG_NAME-$PKG_VERSION.tar.xz"
++  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET libXfixes libXrender libXcomposite libxcb"
++else
++  PKG_VERSION="${PKG_VERSION}_fbdev"
++  PKG_URL="http://people.piment-noir.org/~fraggle/download/odroid/$PKG_NAME-$PKG_VERSION.tar.xz"
++fi
++PKG_SOURCE_DIR="${PKG_NAME}-${PKG_VERSION}"
+ PKG_REV="1"
+ PKG_ARCH="arm"
+ PKG_LICENSE="nonfree"
+-PKG_SITE="http://www.arm.com/products/multimedia/mali-graphics-hardware/mali-400-mp.php"
+-PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
+-PKG_DEPENDS_TARGET="toolchain"
++PKG_SITE="http://www.arm.com/products/multimedia/mali-gpu/ultra-low-power/mali-400.php"
+ PKG_SECTION="graphics"
+ PKG_SHORTDESC="opengl-mali: OpenGL-ES and Mali driver for Mali 400 GPUs"
+ PKG_LONGDESC="opengl-mali: OpenGL-ES and Mali driver for Mali 400 GPUs"
+@@ -39,16 +47,40 @@ makeinstall_target() {
+   mkdir -p $SYSROOT_PREFIX/usr/include
+     cp -PR src/include/* $SYSROOT_PREFIX/usr/include
+ 
++  # EGL pkgconfig definition is needed since Kodi Krypton
++  mkdir -p $SYSROOT_PREFIX/usr/lib/pkgconfig
++    cat > $SYSROOT_PREFIX/usr/lib/pkgconfig/egl.pc <<\ \ \ \ EoF
++prefix=/usr
++exec_prefix=${prefix}
++libdir=${prefix}/lib/
++includedir=${prefix}/include
++
++Name: EGL
++Description: EGL
++Version: @PKG_VERSION@
++Requires:
++Libs: -L${libdir} -lEGL
++Cflags: -I${includedir}/EGL
++    EoF
++    sed -i "s/@PKG_VERSION@/$PKG_VERSION/" $SYSROOT_PREFIX/usr/lib/pkgconfig/egl.pc
++
++  # cleanup packaged unused links
++  rm -f libEGL.so.1
++  rm -f libEGL.so.1.4
++  rm -f libGLESv1_CM.so
++  rm -f libGLESv1_CM.so.1
++  rm -f libGLESv1_CM.so.1.1
++  rm -f libGLESv2.so.2
++  rm -f libGLESv2.so.2.0
++
+   mkdir -p $SYSROOT_PREFIX/usr/lib
+-    cp -PR src/lib/*.so* $SYSROOT_PREFIX/usr/lib
+-    ln -sf libEGL.so.1.4 $SYSROOT_PREFIX/usr/lib/libEGL.so
+-    ln -sf libGLESv1_CM.so.1.1 $SYSROOT_PREFIX/usr/lib/libGLESv1_CM.so
+-    ln -sf libGLESv2.so.2.0 $SYSROOT_PREFIX/usr/lib/libGLESv2.so
++    cp -PR *.so* $SYSROOT_PREFIX/usr/lib
++    ln -sf libMali.so $SYSROOT_PREFIX/usr/lib/libEGL.so
++    ln -sf libMali.so $SYSROOT_PREFIX/usr/lib/libGLESv2.so
+ 
+   mkdir -p $INSTALL/usr/lib
+-    cp -PR src/lib/*.so* $INSTALL/usr/lib
+-    ln -sf libEGL.so.1.4 $INSTALL/usr/lib/libEGL.so
+-    ln -sf libGLESv1_CM.so.1.1 $INSTALL/usr/lib/libGLESv1_CM.so
+-    ln -sf libGLESv2.so.2.0 $INSTALL/usr/lib/libGLESv2.so
++    cp -PR *.so* $INSTALL/usr/lib
++    ln -sf libMali.so $INSTALL/usr/lib/libEGL.so
++    ln -sf libMali.so $INSTALL/usr/lib/libGLESv2.so
+ }
+ 
+diff --git a/packages/graphics/opengl-mali/system.d/xorg.service b/packages/graphics/opengl-mali/system.d/xorg.service
+new file mode 100644
+index 0000000..3194170
+--- /dev/null
++++ b/packages/graphics/opengl-mali/system.d/xorg.service
+@@ -0,0 +1,17 @@
++[Unit]
++Description=Xorg Server
++Before=graphical.target kodi.service
++Requires=xorg-configure@mali.service
++After=xorg-configure@mali.service multi-user.target
++ConditionKernelCommandLine=!installer
++
++[Service]
++Type=notify
++EnvironmentFile=-/run/libreelec/debug/xorg.conf
++ExecStart=/usr/bin/xorg-launch -nolisten tcp vt01 $XORG_DEBUG
++Restart=always
++RestartSec=2
++StartLimitInterval=0
++
++[Install]
++WantedBy=graphical.target
+diff --git a/packages/linux-firmware/samsung-firmware/package.mk b/packages/linux-firmware/samsung-firmware/package.mk
+new file mode 100644
+index 0000000..e1f6ff9
+--- /dev/null
++++ b/packages/linux-firmware/samsung-firmware/package.mk
+@@ -0,0 +1,45 @@
++################################################################################
++#      This file is part of OpenELEC - http://www.openelec.tv
++#      Copyright (C) 2009-2014 Stephan Raue (stephan@openelec.tv)
++#
++#  OpenELEC is free software: you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation, either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  OpenELEC is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY; without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#  GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
++################################################################################
++
++PKG_NAME="samsung-firmware"
++PKG_VERSION="20141026.0e5f637"
++PKG_REV="1"
++PKG_ARCH="any"
++PKG_LICENSE=""
++PKG_SITE="http://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git"
++PKG_URL="http://people.piment-noir.org/~fraggle/download/odroid/$PKG_NAME-$PKG_VERSION.tar.xz"
++PKG_DEPENDS_TARGET="toolchain"
++PKG_PRIORITY="optional"
++PKG_SECTION="firmware"
++PKG_SHORTDESC="samsung-firmware: firmwares for various samsung devices"
++PKG_LONGDESC="samsung-firmware: firmwares for various samsung devices"
++
++PKG_IS_ADDON="no"
++PKG_AUTORECONF="no"
++
++make_target() {
++  : # nothing todo
++}
++
++makeinstall_target() {
++  mkdir -p $INSTALL/lib/firmware/s5p-mfc
++    cp -R * $INSTALL/lib/firmware
++    for fw in s5p-* ; do
++      ln -sf ../${fw} $INSTALL/lib/firmware/s5p-mfc/${fw}
++    done
++}
+diff --git a/packages/linux/package.mk b/packages/linux/package.mk
+index 5f2d2a6..3faae73 100644
+--- a/packages/linux/package.mk
++++ b/packages/linux/package.mk
+@@ -55,6 +55,11 @@ case "$LINUX" in
+     PKG_URL="$DISTRO_SRC/$PKG_SOURCE_NAME"
+     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET imx6-status-led imx6-soc-fan irqbalanced"
+     ;;
++  mfc-3.8)
++    PKG_COMMIT="ddfddf8"
++    PKG_VERSION="${PKG_COMMIT}"
++    PKG_URL="https://github.com/hardkernel/linux/archive/$PKG_VERSION.tar.gz"
++    ;;
+   *)
+     PKG_VERSION="4.8.11"
+     PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
+@@ -239,6 +244,11 @@ makeinstall_init() {
+ }
+ 
+ post_install() {
++  case $PROJECT in
++    Odroid_U2)
++      ln -sfn /storage/.config/smsc95xx_mac_addr $INSTALL/etc/smsc95xx_mac_addr
++    ;;
++  esac
+   mkdir -p $INSTALL/lib/firmware/
+     ln -sf /storage/.config/firmware/ $INSTALL/lib/firmware/updates
+ 
+diff --git a/packages/mediacenter/kodi/package.mk b/packages/mediacenter/kodi/package.mk
+index 17f7384..ad3f981 100644
+--- a/packages/mediacenter/kodi/package.mk
++++ b/packages/mediacenter/kodi/package.mk
+@@ -202,6 +202,11 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
+     KODI_CODEC="--enable-codec=imxvpu"
+   elif [ "$KODIPLAYER_DRIVER" = libamcodec ]; then
+     KODI_CODEC="--enable-codec=amcodec"
++  elif [ "$KODIPLAYER_DRIVER" = odroid-mfc ]; then
++    PKG_DEPENDS_TARGET="${PKG_DEPENDS_TARGET/ $KODIPLAYER_DRIVER/}"
++    EGL_LIBS="-L$SYSROOT_PREFIX/usr/lib -lEGL"
++    EGL_CFLAGS="-I$SYSROOT_PREFIX/usr/include"
++    KODI_CODEC="--enable-codec=mfc"
+   else
+     KODI_OPENMAX="--disable-openmax"
+   fi
+diff --git a/packages/tools/u-boot/package.mk b/packages/tools/u-boot/package.mk
+index a9c686e..ce1d8e3 100644
+--- a/packages/tools/u-boot/package.mk
++++ b/packages/tools/u-boot/package.mk
+@@ -18,20 +18,28 @@
+ 
+ PKG_NAME="u-boot"
+ PKG_DEPENDS_TARGET="toolchain"
+-if [ "$UBOOT_VERSION" = "imx6-cuboxi" ]; then
+-  PKG_VERSION="imx6-408544d"
+-  PKG_SITE="http://imx.solid-run.com/wiki/index.php?title=Building_the_kernel_and_u-boot_for_the_CuBox-i_and_the_HummingBoard"
+-  # https://github.com/SolidRun/u-boot-imx6.git
+-  PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
+-  [ -n "$UBOOT_CONFIG_V2" ] && PKG_DEPENDS_TARGET="toolchain u-boot-v2"
+-elif [ "$UBOOT_VERSION" = "hardkernel" ]; then
+-  PKG_VERSION="6e4e886"
+-  PKG_SITE="https://github.com/hardkernel/u-boot"
+-  PKG_URL="https://github.com/hardkernel/u-boot/archive/$PKG_VERSION.tar.gz"
+-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gcc-linaro-aarch64-elf:host gcc-linaro-arm-eabi:host"
+-else
+-  exit 0
+-fi
++case "$UBOOT_VERSION" in
++    "imx6-cuboxi")
++      PKG_VERSION="imx6-408544d"
++      PKG_SITE="http://imx.solid-run.com/wiki/index.php?title=Building_the_kernel_and_u-boot_for_the_CuBox-i_and_the_HummingBoard"
++      # https://github.com/SolidRun/u-boot-imx6.git
++      PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
++      [ -n "$UBOOT_CONFIG_V2" ] && PKG_DEPENDS_TARGET="toolchain u-boot-v2"
++      ;;
++    "hardkernel")
++      PKG_VERSION="6e4e886"
++      PKG_SITE="https://github.com/hardkernel/u-boot"
++      PKG_URL="https://github.com/hardkernel/u-boot/archive/$PKG_VERSION.tar.gz"
++      PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gcc-linaro-aarch64-elf:host gcc-linaro-arm-eabi:host"
++      ;;
++    "upstream"|*)
++      PKG_VERSION="2015.10"
++      PKG_SITE="http://www.denx.de/wiki/U-Boot/WebHome"
++      PKG_URL="ftp://ftp.denx.de/pub/u-boot/u-boot-$PKG_VERSION.tar.bz2"
++      PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET dtc:host"
++      ;;
++esac
++[ "$PROJECT" = "Odroid_U2" ] && PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET odroid-u2-bootloader"
+ PKG_REV="1"
+ PKG_ARCH="arm aarch64"
+ PKG_LICENSE="GPL"
+@@ -140,6 +148,19 @@ makeinstall_target() {
+         cp -PRv $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz $INSTALL/usr/share/bootloader
+       fi
+       ;;
++    Odroid_U2)
++      # FIXME: This code path is more specific to upstream u-boot version than a project
++      if [ -f "$ROOT/$PKG_BUILD/u-boot-dtb.bin" ]; then
++        cp -PRv $ROOT/$PKG_BUILD/u-boot-dtb.bin $INSTALL/usr/share/bootloader/u-boot
++      elif [ -f "$ROOT/$PKG_BUILD/u-boot.bin" ]; then
++        cp -PRv $ROOT/$PKG_BUILD/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
++      elif [ -f "$ROOT/$PKG_BUILD/sd_fuse/u-boot.bin" ]; then
++        cp -PRv $ROOT/$PKG_BUILD/sd_fuse/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
++      elif [ -f "$ROOT/$PKG_BUILD/build/u-boot.bin" ]; then
++        cp -PRv $ROOT/$PKG_BUILD/build/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
++      fi
++      cp -PRv $PKG_DIR/scripts/update-u2.sh $INSTALL/usr/share/bootloader/update.sh
++      ;;
+     imx6)
+       cp -PRv $PKG_DIR/scripts/update.sh $INSTALL/usr/share/bootloader
+       ;;
+diff --git a/packages/tools/u-boot/release b/packages/tools/u-boot/release
+index 6787a2f..016bbc8 100755
+--- a/packages/tools/u-boot/release
++++ b/packages/tools/u-boot/release
+@@ -47,4 +47,12 @@ mkdir -p $RELEASE_DIR/3rdparty/bootloader
+         cp -PR $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz $RELEASE_DIR/3rdparty/bootloader
+       fi
+       ;;
++    Odroid_U2)
++      #cp -PR $BUILD/$BOOTLOADER-*/u-boot.bin $RELEASE_DIR/3rdparty/bootloader/u-boot
++      for blob in $INSTALL/usr/share/bootloader/* ; do
++        cp -PR $blob $RELEASE_DIR/3rdparty/bootloader 2>/dev/null || :
++      done
++      cp -PR $PROJECT_DIR/$PROJECT/bootloader/boot.ini $RELEASE_DIR/3rdparty/bootloader
++      cp -PR $PROJECT_DIR/$PROJECT/bootloader/u-boot-fuse $RELEASE_DIR/3rdparty/bootloader
++      ;;
+   esac
+diff --git a/packages/tools/u-boot/scripts/update-u2.sh b/packages/tools/u-boot/scripts/update-u2.sh
+new file mode 100644
+index 0000000..ed00067
+--- /dev/null
++++ b/packages/tools/u-boot/scripts/update-u2.sh
+@@ -0,0 +1,73 @@
++#!/bin/sh
++
++################################################################################
++#      This file is part of OpenELEC - http://www.openelec.tv
++#      Copyright (C) 2009-2014 Stephan Raue (stephan@openelec.tv)
++#
++#  OpenELEC is free software: you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation, either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  OpenELEC is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY; without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#  GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
++################################################################################
++
++[ -z "$SYSTEM_ROOT" ] && SYSTEM_ROOT=""
++[ -z "$BOOT_ROOT" ] && BOOT_ROOT="/flash"
++[ -z "$BOOT_PART" ] && BOOT_PART=$(df "$BOOT_ROOT" | tail -1 | awk {' print $1 '})
++if [ -z "$BOOT_DISK" ]; then
++  case $BOOT_PART in
++    /dev/sd[a-z][0-9]*)
++      BOOT_DISK=$(echo $BOOT_PART | sed -e "s,[0-9]*,,g")
++      ;;
++    /dev/mmcblk*)
++      BOOT_DISK=$(echo $BOOT_PART | sed -e "s,p[0-9]*,,g")
++      ;;
++  esac
++fi
++
++# mount $BOOT_ROOT r/w
++  mount -o remount,rw $BOOT_ROOT
++
++# update Device Tree Blobs
++  for all_dtb in /flash/*.dtb /flash/DTB; do
++    dtb=$(basename $all_dtb)
++    if [ -f $SYSTEM_ROOT/usr/share/bootloader/$dtb ]; then
++      echo "*** updating Device Tree Blob: $dtb ..."
++      cp -p $SYSTEM_ROOT/usr/share/bootloader/$dtb $BOOT_ROOT
++    fi
++  done
++
++# stop if on eMMC that won't accept the new bootloader
++if [ -f /sys/block/${BOOT_DISK}boot0/force_ro ]; then
++  emmc=1
++  D="eMMC"
++  device=/dev/${BOOT_DISK}boot0
++  if ! echo 0 > /sys/block/${BOOT_DISK}boot0/force_ro; then
++    msgbox "I've found a running eMMC but I couldn't get it to accept the new bootloaders."
++    exit
++  fi
++fi
++
++echo "*** updating u-boot for Odroid on: $BOOT_DISK ..."
++if [ -n "${emmc}" ]; then
++  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/bl1 of=$BOOT_DISK seek=0
++  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/bl2 of=$BOOT_DISK seek=30
++  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/u-boot of=$BOOT_DISK seek=62
++  dd bs 512 if=$SYSTEM_ROOT/usr/share/bootloader/tzsw of=$BOOT_DISK seek=2110
++else
++  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/bl1 of=$BOOT_DISK seek=1
++  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/bl2 of=$BOOT_DISK seek=31
++  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/u-boot of=$BOOT_DISK seek=63
++  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/tzsw of=$BOOT_DISK seek=2111
++fi
++
++# mount $BOOT_ROOT r/o
++  sync
++  mount -o remount,ro $BOOT_ROOT
+diff --git a/packages/tools/u-boot/scripts/update.sh b/packages/tools/u-boot/scripts/update.sh
+old mode 100755
+new mode 100644
+diff --git a/packages/x11/driver/xf86-video-armsoc/config/xorg-armsoc.conf b/packages/x11/driver/xf86-video-armsoc/config/xorg-armsoc.conf
+new file mode 100644
+index 0000000..e1fb459
+--- /dev/null
++++ b/packages/x11/driver/xf86-video-armsoc/config/xorg-armsoc.conf
+@@ -0,0 +1,32 @@
++Section "Device"
++    Identifier     "ARMSoC Device"
++    Driver         "armsoc"
++
++    Option         "fbdev"        "/dev/fb0"
++    Option         "Debug"        "false"
++    Option         "DPMS"         "false
++EndSection
++
++Section "Screen"
++    Identifier     "ARMSoC Screen"
++    Device         "ARMSoC Device"
++    DefaultDepth   24
++    Option         "ColorRange"   "Full"
++EndSection
++
++Section "ServerLayout"
++    Identifier     "ARMSoC Layout"
++    Option         "Blanktime"    "0"
++    Option         "StandbyTime"  "0"
++    Option         "SuspendTime"  "0"
++    Option         "OffTime"      "0"
++EndSection
++
++Section "Extensions"
++    Option         "Composite"    "false"
++EndSection
++
++Section "DRI"
++    Mode           0666
++EndSection
++
+diff --git a/packages/x11/driver/xf86-video-armsoc/package.mk b/packages/x11/driver/xf86-video-armsoc/package.mk
+new file mode 100644
+index 0000000..cbfc451
+--- /dev/null
++++ b/packages/x11/driver/xf86-video-armsoc/package.mk
+@@ -0,0 +1,40 @@
++################################################################################
++#      This file is part of OpenELEC - http://www.openelec.tv
++#      Copyright (C) 2009-2014 Stephan Raue (stephan@openelec.tv)
++#
++#  OpenELEC is free software: you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation, either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  OpenELEC is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY; without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#  GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with OpenELEC.  If not, see <http://www.gnu.org/licenses/>.
++################################################################################
++
++PKG_NAME="xf86-video-armsoc"
++PKG_VERSION="1.4.0"
++PKG_REV="1"
++PKG_ARCH="arm"
++PKG_LICENSE="OSS"
++PKG_SITE="http://www.hardkernel.org"
++PKG_URL="http://people.piment-noir.org/~fraggle/download/odroid/$PKG_NAME-$PKG_VERSION.tar.xz"
++PKG_DEPENDS_TARGET="toolchain util-macros xorg-server"
++PKG_NEED_UNPACK="$LINUX_DEPENDS"
++PKG_SECTION="x11/driver"
++PKG_SHORTDESC="xf86-video-armsoc: The Xorg driver for some ARM video chips"
++PKG_LONGDESC="The Xorg driver for some ARM video chips"
++
++PKG_IS_ADDON="no"
++PKG_AUTORECONF="yes"
++
++PKG_CONFIGURE_OPTS_TARGET="--with-xorg-module-dir=$XORG_PATH_MODULES --with-drmmode=exynos"
++
++post_makeinstall_target() {
++  mkdir -p $INSTALL/etc/X11/xorg.conf.d
++    cp $PKG_DIR/config/*.conf $INSTALL/etc/X11/xorg.conf.d/20-armsoc.conf
++}
+diff --git a/packages/x11/driver/xf86-video-armsoc/udev.d/50-mali.rules b/packages/x11/driver/xf86-video-armsoc/udev.d/50-mali.rules
+new file mode 100644
+index 0000000..c23ff96
+--- /dev/null
++++ b/packages/x11/driver/xf86-video-armsoc/udev.d/50-mali.rules
+@@ -0,0 +1,2 @@
++KERNEL=="mali", MODE="0777", GROUP="video"
++KERNEL=="ump", MODE="0777", GROUP="video"
