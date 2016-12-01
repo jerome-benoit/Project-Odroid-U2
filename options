@@ -38,8 +38,8 @@
   # Bootloader to use (syslinux / u-boot / atv-bootloader / bcm2835-bootloader)
     BOOTLOADER="u-boot"
 
-  # u-boot version to use (default to upstream)
-    UBOOT_VERSION="upstream"
+  # u-boot version to use (default to mainline)
+    UBOOT_VERSION="mainline"
 
   # Configuration for u-boot
     UBOOT_CONFIG="odroid_defconfig"
@@ -149,7 +149,7 @@
     EXTRA_DEPS_PKG="u-boot-tools"
 
   # kernel image name
-    KERNEL_NAME="kernel.img"
+    KERNEL_NAME="KERNEL"
 
   # set the start of the system partition during the mkimage process
     SYSTEM_PART_START=3072

@@ -1,5 +1,5 @@
 diff --git a/configure.ac b/configure.ac
-index 34fe643..b95a866 100644
+index 87bfbbf..3d1b4a8 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -214,6 +214,10 @@ libbluetooth_enabled="== libbluetooth enabled. =="
@@ -106,7 +106,7 @@ index d28f263..b8511d5 100644
       ;;
    *)
 diff --git a/xbmc/cores/AudioEngine/Sinks/AESinkALSA.cpp b/xbmc/cores/AudioEngine/Sinks/AESinkALSA.cpp
-index 6a9066b..30653a3 100644
+index d66993a..b20a7a7 100644
 --- a/xbmc/cores/AudioEngine/Sinks/AESinkALSA.cpp
 +++ b/xbmc/cores/AudioEngine/Sinks/AESinkALSA.cpp
 @@ -490,6 +490,7 @@ snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info)
@@ -125,7 +125,7 @@ index 6a9066b..30653a3 100644
  }
  
  bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
-@@ -744,16 +746,16 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
+@@ -743,16 +745,16 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
    snd_pcm_hw_params_get_buffer_size_max(hw_params, &bufferSize);
    snd_pcm_hw_params_get_period_size_max(hw_params, &periodSize, NULL);
  
@@ -146,7 +146,7 @@ index 6a9066b..30653a3 100644
     According to upstream we should set buffer size first - so make sure it is always at least
     4x period size to not get underruns (some systems seem to have issues with only 2 periods)
    */
-@@ -772,7 +774,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
+@@ -771,7 +773,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
      snd_pcm_hw_params_copy(hw_params_copy, hw_params); // restore working copy
      CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Request: Failed to limit periodSize to %lu", periodSizeMax);
    }
@@ -155,7 +155,7 @@ index 6a9066b..30653a3 100644
    // first trying bufferSize, PeriodSize
    // for more info see here:
    // http://mailman.alsa-project.org/pipermail/alsa-devel/2009-September/021069.html
-@@ -782,22 +784,24 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
+@@ -781,22 +783,24 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
    snd_pcm_uframes_t periodSizeTemp, bufferSizeTemp;
    periodSizeTemp = periodSize;
    bufferSizeTemp = bufferSize;
@@ -184,7 +184,7 @@ index 6a9066b..30653a3 100644
          || snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
        {
          // try only BufferSize
-@@ -819,7 +823,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
+@@ -818,7 +822,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
        snd_pcm_get_params(m_pcm, &bufferSize, &periodSize);
      }
    }
@@ -193,7 +193,7 @@ index 6a9066b..30653a3 100644
    CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Got: periodSize %lu, bufferSize %lu", periodSize, bufferSize);
  
    /* set the format parameters */
-@@ -1301,6 +1305,15 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
+@@ -1300,6 +1304,15 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
  
  AEDeviceType CAESinkALSA::AEDeviceTypeFromName(const std::string &name)
  {
@@ -209,7 +209,7 @@ index 6a9066b..30653a3 100644
    if (name.substr(0, 4) == "hdmi")
      return AE_DEVTYPE_HDMI;
    else if (name.substr(0, 6) == "iec958" || name.substr(0, 5) == "spdif")
-@@ -1405,9 +1418,9 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
+@@ -1404,9 +1417,9 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
  
              if (badHDMI)
              {
@@ -246,7 +246,7 @@ index 9717412..6cc02b4 100644
      if (pCodec)
        return pCodec;
 diff --git a/xbmc/cores/VideoPlayer/DVDCodecs/Video/AMLCodec.cpp b/xbmc/cores/VideoPlayer/DVDCodecs/Video/AMLCodec.cpp
-index f9b4138..d053af7 100644
+index c38c223..2be3718 100644
 --- a/xbmc/cores/VideoPlayer/DVDCodecs/Video/AMLCodec.cpp
 +++ b/xbmc/cores/VideoPlayer/DVDCodecs/Video/AMLCodec.cpp
 @@ -398,7 +398,25 @@ void dumpfile_write(am_private_t *para, void* buf, int bufsiz)
@@ -285,7 +285,7 @@ index f9b4138..d053af7 100644
      buf = pkt->data;
      size = pkt->data_size ;
      if (size == 0 && pkt->isvalid) {
-@@ -1563,7 +1581,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
+@@ -1564,7 +1582,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
        // h264 in an avi file
        if (m_hints.ptsinvalid)
          am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
@@ -294,7 +294,7 @@ index f9b4138..d053af7 100644
      case VFORMAT_REAL:
        am_private->stream_type = AM_STREAM_RM;
        am_private->vcodec.noblock = 1;
-@@ -1628,7 +1646,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
+@@ -1629,7 +1647,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
  
    Create();
  
@@ -303,7 +303,19 @@ index f9b4138..d053af7 100644
  
    std::string strScaler;
    SysfsUtils::GetString("/sys/class/ppmgr/ppscaler", strScaler);
-@@ -2154,7 +2172,6 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
+@@ -1852,9 +1870,9 @@ int CAMLCodec::Decode(uint8_t *pData, size_t iSize, double dts, double pts)
+ 
+   // if we have still frames, demux size will be small
+   // and we need to pre-buffer more.
+-  double target_timesize = 1.0;
++  double target_timesize = 1.5;
+   if (iSize < 20)
+-    target_timesize = 2.0;
++    target_timesize += 1.0;
+ 
+   int rtn = 0;
+ 
+@@ -2155,7 +2173,6 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
          int diff = (int) ((dst_rect.Height() - dst_rect.Width()) / 2);
          dst_rect = CRect(DestRect.x1 - diff, DestRect.y1, DestRect.x2 + diff, DestRect.y2);
        }
@@ -311,7 +323,7 @@ index f9b4138..d053af7 100644
    }
  
    if (m_dst_rect != dst_rect)
-@@ -2176,7 +2193,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
+@@ -2177,7 +2194,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
  #ifdef TARGET_ANDROID
    display = m_display_rect;
  #else
@@ -320,7 +332,7 @@ index f9b4138..d053af7 100644
  #endif
    if (gui != display)
    {
-@@ -2248,6 +2265,8 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
+@@ -2249,6 +2266,8 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
    std::string s_gui = StringUtils::Format("%i,%i,%i,%i",
      (int)gui.x1, (int)gui.y1,
      (int)gui.Width(), (int)gui.Height());
@@ -1407,7 +1419,7 @@ index 0cf90d1..ff2c2dc 100644
  SRCS += RBP.cpp
  
 diff --git a/xbmc/utils/AMLUtils.cpp b/xbmc/utils/AMLUtils.cpp
-index b39dea3..78384e3 100644
+index cd19ec7..3954889 100644
 --- a/xbmc/utils/AMLUtils.cpp
 +++ b/xbmc/utils/AMLUtils.cpp
 @@ -78,7 +78,7 @@ bool aml_wired_present()
@@ -1419,7 +1431,7 @@ index b39dea3..78384e3 100644
    if (!aml_present())
      return false;
  
-@@ -234,7 +234,8 @@ bool aml_support_h264_4k2k()
+@@ -237,7 +237,8 @@ AML_SUPPORT_H264_4K2K aml_support_h264_4k2k()
  
  void aml_set_audio_passthrough(bool passthrough)
  {
@@ -1429,7 +1441,7 @@ index b39dea3..78384e3 100644
  }
  
  void aml_probe_hdmi_audio()
-@@ -252,7 +253,7 @@ void aml_probe_hdmi_audio()
+@@ -255,7 +256,7 @@ void aml_probe_hdmi_audio()
    {
      char valstr[1024] = {0};
  
@@ -1438,7 +1450,7 @@ index b39dea3..78384e3 100644
      valstr[strlen(valstr)] = '\0';
      close(fd);
  
-@@ -387,6 +388,60 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
+@@ -390,6 +391,60 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
      res->fRefreshRate = 50;
      res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
    }
@@ -1499,7 +1511,7 @@ index b39dea3..78384e3 100644
    else if (StringUtils::EqualsNoCase(fromMode, "720p") || StringUtils::EqualsNoCase(fromMode, "720p60hz"))
    {
      res->iWidth = 1280;
-@@ -432,6 +487,24 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
+@@ -435,6 +490,24 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
      res->fRefreshRate = 24;
      res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
    }
@@ -1524,7 +1536,7 @@ index b39dea3..78384e3 100644
    else if (StringUtils::EqualsNoCase(fromMode, "1080p30hz"))
    {
      res->iWidth = 1920;
-@@ -540,7 +613,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
+@@ -543,7 +616,7 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
      res->fRefreshRate = 30;
      res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
    }
@@ -1533,7 +1545,7 @@ index b39dea3..78384e3 100644
    {
      res->iWidth = 1920;
      res->iHeight= 1080;
-@@ -549,7 +622,16 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
+@@ -552,7 +625,16 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
      res->fRefreshRate = 50;
      res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
    }
@@ -1551,7 +1563,7 @@ index b39dea3..78384e3 100644
    {
      res->iWidth = 1920;
      res->iHeight= 1080;
-@@ -574,4 +656,3 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
+@@ -577,4 +659,3 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
  
    return res->iWidth > 0 && res->iHeight> 0;
  }

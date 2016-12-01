@@ -1,5 +1,5 @@
 diff --git a/packages/devel/libcec/package.mk b/packages/devel/libcec/package.mk
-index 08ecc5d..e85b8b9 100644
+index b1a84e3..053a1ea 100644
 --- a/packages/devel/libcec/package.mk
 +++ b/packages/devel/libcec/package.mk
 @@ -57,6 +57,12 @@ else
@@ -241,7 +241,7 @@ index 5f2d2a6..3faae73 100644
      ln -sf /storage/.config/firmware/ $INSTALL/lib/firmware/updates
  
 diff --git a/packages/mediacenter/kodi/package.mk b/packages/mediacenter/kodi/package.mk
-index 17f7384..ad3f981 100644
+index dc3abb1..7c3d116 100644
 --- a/packages/mediacenter/kodi/package.mk
 +++ b/packages/mediacenter/kodi/package.mk
 @@ -202,6 +202,11 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
@@ -257,7 +257,7 @@ index 17f7384..ad3f981 100644
      KODI_OPENMAX="--disable-openmax"
    fi
 diff --git a/packages/tools/u-boot/package.mk b/packages/tools/u-boot/package.mk
-index a9c686e..ce1d8e3 100644
+index a9c686e..863ce58 100644
 --- a/packages/tools/u-boot/package.mk
 +++ b/packages/tools/u-boot/package.mk
 @@ -18,20 +18,28 @@
@@ -292,7 +292,7 @@ index a9c686e..ce1d8e3 100644
 +      PKG_URL="https://github.com/hardkernel/u-boot/archive/$PKG_VERSION.tar.gz"
 +      PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gcc-linaro-aarch64-elf:host gcc-linaro-arm-eabi:host"
 +      ;;
-+    "upstream"|*)
++    "mainline"|*)
 +      PKG_VERSION="2015.10"
 +      PKG_SITE="http://www.denx.de/wiki/U-Boot/WebHome"
 +      PKG_URL="ftp://ftp.denx.de/pub/u-boot/u-boot-$PKG_VERSION.tar.bz2"
@@ -308,7 +308,7 @@ index a9c686e..ce1d8e3 100644
        fi
        ;;
 +    Odroid_U2)
-+      # FIXME: This code path is more specific to upstream u-boot version than a project
++      # FIXME: this code path is more specific to mainline u-boot version than a project
 +      if [ -f "$ROOT/$PKG_BUILD/u-boot-dtb.bin" ]; then
 +        cp -PRv $ROOT/$PKG_BUILD/u-boot-dtb.bin $INSTALL/usr/share/bootloader/u-boot
 +      elif [ -f "$ROOT/$PKG_BUILD/u-boot.bin" ]; then
