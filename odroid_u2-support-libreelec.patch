@@ -24,7 +24,7 @@ index 0000000..fd510c7
 +KERNEL=="CEC", MODE="0660"
 \ No newline at end of file
 diff --git a/packages/graphics/libdrm/package.mk b/packages/graphics/libdrm/package.mk
-index 2044a32..7fdd26b 100644
+index db29a1a..35f45c7 100644
 --- a/packages/graphics/libdrm/package.mk
 +++ b/packages/graphics/libdrm/package.mk
 @@ -36,6 +36,7 @@ get_graphicdrivers
@@ -47,7 +47,7 @@ index 2044a32..7fdd26b 100644
  
  PKG_CONFIGURE_OPTS_TARGET="--disable-udev \
 diff --git a/packages/graphics/mesa/package.mk b/packages/graphics/mesa/package.mk
-index f41b982..fb120ea 100644
+index 78a57a7..43b3198 100644
 --- a/packages/graphics/mesa/package.mk
 +++ b/packages/graphics/mesa/package.mk
 @@ -113,7 +113,7 @@ pre_configure_target() {
@@ -163,7 +163,7 @@ index 0000000..3194170
 +WantedBy=graphical.target
 diff --git a/packages/linux-firmware/samsung-firmware/package.mk b/packages/linux-firmware/samsung-firmware/package.mk
 new file mode 100644
-index 0000000..e1f6ff9
+index 0000000..c0324e7
 --- /dev/null
 +++ b/packages/linux-firmware/samsung-firmware/package.mk
 @@ -0,0 +1,45 @@
@@ -206,14 +206,14 @@ index 0000000..e1f6ff9
 +}
 +
 +makeinstall_target() {
-+  mkdir -p $INSTALL/lib/firmware/s5p-mfc
-+    cp -R * $INSTALL/lib/firmware
++  mkdir -p $INSTALL/usr/lib/firmware/s5p-mfc
++    cp -R * $INSTALL/usr/lib/firmware
 +    for fw in s5p-* ; do
-+      ln -sf ../${fw} $INSTALL/lib/firmware/s5p-mfc/${fw}
++      ln -sf ../${fw} $INSTALL/usr/lib/firmware/s5p-mfc/${fw}
 +    done
 +}
 diff --git a/packages/linux/package.mk b/packages/linux/package.mk
-index 5f2d2a6..3faae73 100644
+index 70fbf65..1adc5da 100644
 --- a/packages/linux/package.mk
 +++ b/packages/linux/package.mk
 @@ -55,6 +55,11 @@ case "$LINUX" in
@@ -226,9 +226,9 @@ index 5f2d2a6..3faae73 100644
 +    PKG_URL="https://github.com/hardkernel/linux/archive/$PKG_VERSION.tar.gz"
 +    ;;
    *)
-     PKG_VERSION="4.8.11"
+     PKG_VERSION="4.9"
      PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
-@@ -239,6 +244,11 @@ makeinstall_init() {
+@@ -240,6 +245,11 @@ makeinstall_init() {
  }
  
  post_install() {
@@ -237,27 +237,96 @@ index 5f2d2a6..3faae73 100644
 +      ln -sfn /storage/.config/smsc95xx_mac_addr $INSTALL/etc/smsc95xx_mac_addr
 +    ;;
 +  esac
-   mkdir -p $INSTALL/lib/firmware/
-     ln -sf /storage/.config/firmware/ $INSTALL/lib/firmware/updates
+   mkdir -p $INSTALL/usr/lib/firmware/
+     ln -sf /storage/.config/firmware/ $INSTALL/usr/lib/firmware/updates
  
 diff --git a/packages/mediacenter/kodi/package.mk b/packages/mediacenter/kodi/package.mk
-index dc3abb1..7c3d116 100644
+index 3fcad42..e85a244 100644
 --- a/packages/mediacenter/kodi/package.mk
 +++ b/packages/mediacenter/kodi/package.mk
-@@ -202,6 +202,11 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
-     KODI_CODEC="--enable-codec=imxvpu"
+@@ -197,6 +197,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
+     CXXFLAGS="$CXXFLAGS -DHAS_IMXVPU -DLINUX -DEGL_API_FB"
    elif [ "$KODIPLAYER_DRIVER" = libamcodec ]; then
-     KODI_CODEC="--enable-codec=amcodec"
+     KODI_PLAYER="-DENABLE_AML=ON"
 +  elif [ "$KODIPLAYER_DRIVER" = odroid-mfc ]; then
 +    PKG_DEPENDS_TARGET="${PKG_DEPENDS_TARGET/ $KODIPLAYER_DRIVER/}"
-+    EGL_LIBS="-L$SYSROOT_PREFIX/usr/lib -lEGL"
-+    EGL_CFLAGS="-I$SYSROOT_PREFIX/usr/include"
-+    KODI_CODEC="--enable-codec=mfc"
-   else
-     KODI_OPENMAX="--disable-openmax"
++    KODI_PLAYER="-DENABLE_MFC=ON"
    fi
+ fi
+ 
+diff --git a/packages/mediacenter/kodi/patches/kodi-100.23-add-findimx-cmake-module.patch b/packages/mediacenter/kodi/patches/kodi-100.23-add-findimx-cmake-module.patch
+index e4f0c97..2665925 100644
+--- a/packages/mediacenter/kodi/patches/kodi-100.23-add-findimx-cmake-module.patch
++++ b/packages/mediacenter/kodi/patches/kodi-100.23-add-findimx-cmake-module.patch
+@@ -4,11 +4,17 @@ Date:   Sun Sep 25 15:26:18 2016 -0700
+ 
+     [cmake][IMX] fix imx cmake build
+ 
+-diff --git a/project/cmake/CMakeLists.txt b/project/cmake/CMakeLists.txt
+-index 76870a4..8602a52 100644
++---
++ project/cmake/CMakeLists.txt        |    2 ++
++ project/cmake/modules/FindIMX.cmake |   35 +++++++++++++++++++++++++++++++++++
++ xbmc/linux/CMakeLists.txt           |    4 ++++
++ xbmc/video/videosync/CMakeLists.txt |    5 +++++
++ xbmc/windowing/egl/CMakeLists.txt   |    7 ++++++-
++ 5 files changed, 52 insertions(+), 1 deletion(-)
++
+ --- a/project/cmake/CMakeLists.txt
+ +++ b/project/cmake/CMakeLists.txt
+-@@ -56,6 +56,7 @@ if(UNIX)
++@@ -55,6 +55,7 @@ if(UNIX)
+    if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
+      option(ENABLE_X11         "Enable X11 support?" ON)
+      option(ENABLE_AML         "Enable AML?" OFF)
+@@ -16,7 +22,7 @@ index 76870a4..8602a52 100644
+    endif()
+  endif()
+  # System options
+-@@ -216,6 +217,7 @@ endif()
++@@ -213,6 +214,7 @@ endif()
+  
+  if(CORE_SYSTEM_NAME STREQUAL android OR CORE_SYSTEM_NAME STREQUAL linux)
+    core_optional_dep(AML)
+@@ -24,9 +30,6 @@ index 76870a4..8602a52 100644
+  elseif(CORE_SYSTEM_NAME STREQUAL rbpi)
+    core_require_dep(MMAL)
+  endif()
+-diff --git a/project/cmake/modules/FindIMX.cmake b/project/cmake/modules/FindIMX.cmake
+-new file mode 100644
+-index 0000000..4e1e838
+ --- /dev/null
+ +++ b/project/cmake/modules/FindIMX.cmake
+ @@ -0,0 +1,35 @@
+@@ -65,8 +68,6 @@ index 0000000..4e1e838
+ +list(APPEND IMXVPU_DEFINITIONS -DHAS_IMXVPU=1 -DLINUX -DEGL_API_FB)
+ +
+ +mark_as_advanced(IMX_INCLUDE_DIR IMX_LIBRARIES IMX_DEFINITIONS)
+-diff --git a/xbmc/linux/CMakeLists.txt b/xbmc/linux/CMakeLists.txt
+-index 754cc1e..931c10d 100644
+ --- a/xbmc/linux/CMakeLists.txt
+ +++ b/xbmc/linux/CMakeLists.txt
+ @@ -40,4 +40,8 @@ if(OMXLIB_FOUND)
+@@ -78,8 +79,6 @@ index 754cc1e..931c10d 100644
+ +endif()
+ +
+  core_add_library(linuxsupport)
+-diff --git a/xbmc/video/videosync/CMakeLists.txt b/xbmc/video/videosync/CMakeLists.txt
+-index 421af44..82f7169 100644
+ --- a/xbmc/video/videosync/CMakeLists.txt
+ +++ b/xbmc/video/videosync/CMakeLists.txt
+ @@ -35,6 +35,11 @@ if(CORE_SYSTEM_NAME STREQUAL android)
+@@ -94,8 +93,6 @@ index 421af44..82f7169 100644
+  if(SOURCES AND HEADERS)
+    core_add_library(video_sync)
+  endif()
+-diff --git a/xbmc/windowing/egl/CMakeLists.txt b/xbmc/windowing/egl/CMakeLists.txt
+-index 3ab603e..51e13ab 100644
+ --- a/xbmc/windowing/egl/CMakeLists.txt
+ +++ b/xbmc/windowing/egl/CMakeLists.txt
+ @@ -1,4 +1,4 @@
 diff --git a/packages/tools/u-boot/package.mk b/packages/tools/u-boot/package.mk
-index a9c686e..863ce58 100644
+index a9c686e..d9ed431 100644
 --- a/packages/tools/u-boot/package.mk
 +++ b/packages/tools/u-boot/package.mk
 @@ -18,20 +18,28 @@
@@ -293,7 +362,7 @@ index a9c686e..863ce58 100644
 +      PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gcc-linaro-aarch64-elf:host gcc-linaro-arm-eabi:host"
 +      ;;
 +    "mainline"|*)
-+      PKG_VERSION="2015.10"
++      PKG_VERSION="2016.11"
 +      PKG_SITE="http://www.denx.de/wiki/U-Boot/WebHome"
 +      PKG_URL="ftp://ftp.denx.de/pub/u-boot/u-boot-$PKG_VERSION.tar.bz2"
 +      PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET dtc:host"
@@ -303,7 +372,19 @@ index a9c686e..863ce58 100644
  PKG_REV="1"
  PKG_ARCH="arm aarch64"
  PKG_LICENSE="GPL"
-@@ -140,6 +148,19 @@ makeinstall_target() {
+@@ -58,8 +66,9 @@ pre_configure_target() {
+   MAKEFLAGS=-j1
+ 
+ # copy compiler-gcc5.h to compiler-gcc6. for fake building
+-  cp include/linux/compiler-gcc5.h include/linux/compiler-gcc6.h
+-
++  if [ "$UBOOT_VERSION" != "mainline" -o -z "$UBOOT_VERSION" ]; then
++    cp include/linux/compiler-gcc5.h include/linux/compiler-gcc6.h
++  fi
+ }
+ 
+ make_target() {
+@@ -140,6 +149,19 @@ makeinstall_target() {
          cp -PRv $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz $INSTALL/usr/share/bootloader
        fi
        ;;
@@ -324,7 +405,7 @@ index a9c686e..863ce58 100644
        cp -PRv $PKG_DIR/scripts/update.sh $INSTALL/usr/share/bootloader
        ;;
 diff --git a/packages/tools/u-boot/release b/packages/tools/u-boot/release
-index 6787a2f..016bbc8 100755
+index 6787a2f..5ef0aea 100755
 --- a/packages/tools/u-boot/release
 +++ b/packages/tools/u-boot/release
 @@ -47,4 +47,12 @@ mkdir -p $RELEASE_DIR/3rdparty/bootloader
@@ -332,7 +413,7 @@ index 6787a2f..016bbc8 100755
        fi
        ;;
 +    Odroid_U2)
-+      #cp -PR $BUILD/$BOOTLOADER-*/u-boot.bin $RELEASE_DIR/3rdparty/bootloader/u-boot
++      cp -PR $BUILD/$BOOTLOADER-*/u-boot.bin $RELEASE_DIR/3rdparty/bootloader/u-boot
 +      for blob in $INSTALL/usr/share/bootloader/* ; do
 +        cp -PR $blob $RELEASE_DIR/3rdparty/bootloader 2>/dev/null || :
 +      done
@@ -342,7 +423,7 @@ index 6787a2f..016bbc8 100755
    esac
 diff --git a/packages/tools/u-boot/scripts/update-u2.sh b/packages/tools/u-boot/scripts/update-u2.sh
 new file mode 100644
-index 0000000..ed00067
+index 0000000..42e6760
 --- /dev/null
 +++ b/packages/tools/u-boot/scripts/update-u2.sh
 @@ -0,0 +1,73 @@
@@ -408,7 +489,7 @@ index 0000000..ed00067
 +  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/bl1 of=$BOOT_DISK seek=0
 +  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/bl2 of=$BOOT_DISK seek=30
 +  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/u-boot of=$BOOT_DISK seek=62
-+  dd bs 512 if=$SYSTEM_ROOT/usr/share/bootloader/tzsw of=$BOOT_DISK seek=2110
++  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/tzsw of=$BOOT_DISK seek=2110
 +else
 +  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/bl1 of=$BOOT_DISK seek=1
 +  dd bs=512 if=$SYSTEM_ROOT/usr/share/bootloader/bl2 of=$BOOT_DISK seek=31
@@ -514,3 +595,20 @@ index 0000000..c23ff96
 @@ -0,0 +1,2 @@
 +KERNEL=="mali", MODE="0777", GROUP="video"
 +KERNEL=="ump", MODE="0777", GROUP="video"
+diff --git a/packages/x11/lib/libXfixes/package.mk b/packages/x11/lib/libXfixes/package.mk
+index 87edcd1..27f95eb 100644
+--- a/packages/x11/lib/libXfixes/package.mk
++++ b/packages/x11/lib/libXfixes/package.mk
+@@ -31,7 +31,11 @@ PKG_LONGDESC="X Fixes Library"
+ PKG_IS_ADDON="no"
+ PKG_AUTORECONF="no"
+ 
+-PKG_CONFIGURE_OPTS_TARGET="--enable-static --disable-shared"
++if [ "$OPENGLES" = "opengl-mali" ]; then
++  PKG_CONFIGURE_OPTS_TARGET="--enable-static --enable-shared"
++else
++  PKG_CONFIGURE_OPTS_TARGET="--enable-static --disable-shared"
++fi
+ 
+ pre_configure_target() {
+   export CFLAGS="$CFLAGS -fPIC"

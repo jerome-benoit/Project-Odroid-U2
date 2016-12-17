@@ -48,7 +48,7 @@
     UBOOT_CONFIGFILE="boot.ini"
 
   # Kernel target
-    KERNEL_TARGET="zImage"
+    KERNEL_TARGET="uImage"
 
   # Kernel extra targets to build
     KERNEL_UBOOT_EXTRA_TARGET=""
