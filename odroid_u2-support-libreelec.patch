@@ -950,7 +950,7 @@ index 0000000..c899ba3
 +dd if="$RELEASE_DIR/3rdparty/bootloader/tzsw" of="$DISK" conv=fsync,notrunc bs=512 seek=2111 >"$SAVE_ERROR" 2>&1 || show_error
 diff --git a/projects/Odroid_U2/linux/linux.arm.conf b/projects/Odroid_U2/linux/linux.arm.conf
 new file mode 100644
-index 0000000..056e15c
+index 0000000..b5e1b4e
 --- /dev/null
 +++ b/projects/Odroid_U2/linux/linux.arm.conf
 @@ -0,0 +1,4228 @@
@@ -998,7 +998,7 @@ index 0000000..056e15c
 +# CONFIG_KERNEL_LZMA is not set
 +CONFIG_KERNEL_XZ=y
 +# CONFIG_KERNEL_LZO is not set
-+CONFIG_DEFAULT_HOSTNAME="(none)"
++CONFIG_DEFAULT_HOSTNAME="@DISTRONAME@"
 +CONFIG_VERSION_SIGNATURE=""
 +# CONFIG_SWAP is not set
 +CONFIG_SYSVIPC=y
