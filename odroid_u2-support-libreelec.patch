@@ -343,7 +343,7 @@ index e4f0c97..2665925 100644
  +++ b/xbmc/windowing/egl/CMakeLists.txt
  @@ -1,4 +1,4 @@
 diff --git a/packages/tools/u-boot/package.mk b/packages/tools/u-boot/package.mk
-index a9c686e..d9ed431 100644
+index a9c686e..df8a255 100644
 --- a/packages/tools/u-boot/package.mk
 +++ b/packages/tools/u-boot/package.mk
 @@ -18,20 +18,28 @@
@@ -401,10 +401,29 @@ index a9c686e..d9ed431 100644
  }
  
  make_target() {
-@@ -140,6 +149,19 @@ makeinstall_target() {
-         cp -PRv $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz $INSTALL/usr/share/bootloader
-       fi
-       ;;
+@@ -130,15 +139,34 @@ makeinstall_target() {
+ 
+   cp -PR $PROJECT_DIR/$PROJECT/bootloader/uEnv*.txt $INSTALL/usr/share/bootloader 2>/dev/null || :
+ 
++  mk_u-boot_splash()
++  {
++  if [ -f $PROJECT_DIR/$PROJECT/splash/boot-logo.bmp.gz ]; then
++     cp -PRv $PROJECT_DIR/$PROJECT/splash/boot-logo.bmp.gz $INSTALL/usr/share/bootloader
++  elif [ -f $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz ]; then
++    cp -PRv $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz $INSTALL/usr/share/bootloader
++  fi
++  }
++
+   case $PROJECT in
+     Odroid_C2)
+       cp -PRv $PKG_DIR/scripts/update-c2.sh $INSTALL/usr/share/bootloader/update.sh
+       cp -PRv $ROOT/$PKG_BUILD/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
+-      if [ -f $PROJECT_DIR/$PROJECT/splash/boot-logo.bmp.gz ]; then
+-        cp -PRv $PROJECT_DIR/$PROJECT/splash/boot-logo.bmp.gz $INSTALL/usr/share/bootloader
+-      elif [ -f $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz ]; then
+-        cp -PRv $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz $INSTALL/usr/share/bootloader
++      mk_u-boot_splash
++      ;;
 +    Odroid_U2)
 +      # FIXME: this code path is more specific to mainline u-boot version than a project
 +      if [ -f "$ROOT/$PKG_BUILD/u-boot-dtb.bin" ]; then
@@ -415,20 +434,40 @@ index a9c686e..d9ed431 100644
 +        cp -PRv $ROOT/$PKG_BUILD/sd_fuse/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
 +      elif [ -f "$ROOT/$PKG_BUILD/build/u-boot.bin" ]; then
 +        cp -PRv $ROOT/$PKG_BUILD/build/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
-+      fi
+       fi
 +      cp -PRv $PKG_DIR/scripts/update-u2.sh $INSTALL/usr/share/bootloader/update.sh
-+      ;;
++      mk_u-boot_splash
+       ;;
      imx6)
        cp -PRv $PKG_DIR/scripts/update.sh $INSTALL/usr/share/bootloader
-       ;;
 diff --git a/packages/tools/u-boot/release b/packages/tools/u-boot/release
-index 6787a2f..5ef0aea 100755
+index 6787a2f..b2c4782 100755
 --- a/packages/tools/u-boot/release
 +++ b/packages/tools/u-boot/release
-@@ -47,4 +47,12 @@ mkdir -p $RELEASE_DIR/3rdparty/bootloader
-         cp -PR $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz $RELEASE_DIR/3rdparty/bootloader
-       fi
-       ;;
+@@ -37,14 +37,28 @@ mkdir -p $RELEASE_DIR/3rdparty/bootloader
+ 
+   cp -PR $BUILD/linux-*/arch/$TARGET_KERNEL_ARCH/boot/dts/*.dtb $RELEASE_DIR/3rdparty/bootloader 2>/dev/null || :
+ 
++  mk_u-boot_splash()
++  {
++  if [ -f $PROJECT_DIR/$PROJECT/splash/boot-logo.bmp.gz ]; then
++    cp -PR $PROJECT_DIR/$PROJECT/splash/boot-logo.bmp.gz $RELEASE_DIR/3rdparty/bootloader
++  elif [ -f $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz ]; then
++    cp -PR $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz $RELEASE_DIR/3rdparty/bootloader
++  fi
++  }
++
+   case $PROJECT in
+     Odroid_C2)
+       cp -PR $BUILD/$BOOTLOADER-*/u-boot.bin $RELEASE_DIR/3rdparty/bootloader/u-boot
+       cp -PR $PROJECT_DIR/$PROJECT/bootloader/boot.ini $RELEASE_DIR/3rdparty/bootloader
+-      if [ -f $PROJECT_DIR/$PROJECT/splash/boot-logo.bmp.gz ]; then
+-        cp -PR $PROJECT_DIR/$PROJECT/splash/boot-logo.bmp.gz $RELEASE_DIR/3rdparty/bootloader
+-      elif [ -f $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz ]; then
+-        cp -PR $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz $RELEASE_DIR/3rdparty/bootloader
+-      fi
++      mk_u-boot_splash
++      ;;
 +    Odroid_U2)
 +      cp -PR $BUILD/$BOOTLOADER-*/u-boot.bin $RELEASE_DIR/3rdparty/bootloader/u-boot
 +      for blob in $INSTALL/usr/share/bootloader/* ; do
@@ -436,7 +475,8 @@ index 6787a2f..5ef0aea 100755
 +      done
 +      cp -PR $PROJECT_DIR/$PROJECT/bootloader/boot.ini $RELEASE_DIR/3rdparty/bootloader
 +      cp -PR $PROJECT_DIR/$PROJECT/bootloader/u-boot-fuse $RELEASE_DIR/3rdparty/bootloader
-+      ;;
++      mk_u-boot_splash
+       ;;
    esac
 diff --git a/packages/tools/u-boot/scripts/update-u2.sh b/packages/tools/u-boot/scripts/update-u2.sh
 new file mode 100644
@@ -5584,10 +5624,10 @@ index 0000000..9342ba2
 +
 diff --git a/projects/Odroid_U2/patches/kodi/9999.9991_kodi_add-mfc-codec-full.patch b/projects/Odroid_U2/patches/kodi/9999.9991_kodi_add-mfc-codec-full.patch
 new file mode 100644
-index 0000000..6e33d3b
+index 0000000..7caecd9
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/kodi/9999.9991_kodi_add-mfc-codec-full.patch
-@@ -0,0 +1,2696 @@
+@@ -0,0 +1,2709 @@
 +---
 + configure.ac                                                |   41 
 + m4/xbmc_arch.m4                                             |    2 
@@ -5615,9 +5655,9 @@ index 0000000..6e33d3b
 + xbmc/windowing/egl/EGLNativeTypeFbdev.h                     |   68 +
 + xbmc/windowing/egl/EGLNativeTypeHybris.cpp                  |  279 +++++
 + xbmc/windowing/egl/EGLNativeTypeHybris.h                    |   77 +
-+ xbmc/windowing/egl/EGLWrapper.cpp                           |   11 
++ xbmc/windowing/egl/EGLWrapper.cpp                           |   17 
 + xbmc/windowing/egl/Makefile.in                              |    4 
-+ 28 files changed, 1957 insertions(+), 75 deletions(-)
++ 28 files changed, 1960 insertions(+), 78 deletions(-)
 +
 +--- a/configure.ac
 ++++ b/configure.ac
@@ -8231,16 +8271,29 @@ index 0000000..6e33d3b
 ++};
 +--- a/xbmc/windowing/egl/EGLWrapper.cpp
 ++++ b/xbmc/windowing/egl/EGLWrapper.cpp
++@@ -24,9 +24,9 @@
++ #include <assert.h>
++ #if defined(TARGET_ANDROID)
++   #include "EGLNativeTypeAndroid.h"
++-#if defined(HAS_LIBAMCODEC)
++-  #include "EGLNativeTypeAmlAndroid.h"
++-#endif
+++  #if defined(HAS_LIBAMCODEC)
+++    #include "EGLNativeTypeAmlAndroid.h"
+++  #endif
++ #endif
++ #if defined(TARGET_RASPBERRY_PI)
++   #include "EGLNativeTypeRaspberryPI.h"
 +@@ -35,8 +35,12 @@
 +   #include "EGLNativeTypeIMX.h"
 + #endif
 + #if defined(TARGET_LINUX) && defined(HAS_LIBAMCODEC)
 +-#include "EGLNativeTypeAmlogic.h"
 ++  #include "EGLNativeTypeAmlogic.h"
-+ #endif
+++#endif
 ++#if defined(TARGET_LINUX) && defined(HAS_HYBRIS)
 ++  #include "EGLNativeTypeHybris.h"
-++#endif
++ #endif
 ++#include "EGLNativeTypeFbdev.h"
 + #include "EGLWrapper.h"
 + 
