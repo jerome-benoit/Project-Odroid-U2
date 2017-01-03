@@ -258,10 +258,10 @@ index 3411dbd..a17685d 100644
      ln -sf /storage/.config/firmware/ $INSTALL/usr/lib/firmware/updates
  
 diff --git a/packages/mediacenter/kodi/package.mk b/packages/mediacenter/kodi/package.mk
-index cb51b7b..e9e8e37 100644
+index f75dc3e..013d3b4 100644
 --- a/packages/mediacenter/kodi/package.mk
 +++ b/packages/mediacenter/kodi/package.mk
-@@ -197,6 +197,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
+@@ -198,6 +198,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
      CXXFLAGS="$CXXFLAGS -DHAS_IMXVPU -DLINUX -DEGL_API_FB"
    elif [ "$KODIPLAYER_DRIVER" = libamcodec ]; then
      KODI_PLAYER="-DENABLE_AML=ON"
@@ -342,6 +342,18 @@ index e4f0c97..2665925 100644
  --- a/xbmc/windowing/egl/CMakeLists.txt
  +++ b/xbmc/windowing/egl/CMakeLists.txt
  @@ -1,4 +1,4 @@
+diff --git a/packages/tools/dtc/package.mk b/packages/tools/dtc/package.mk
+index 6245877..0db4ac2 100644
+--- a/packages/tools/dtc/package.mk
++++ b/packages/tools/dtc/package.mk
+@@ -36,3 +36,7 @@ makeinstall_target() {
+   mkdir -p $INSTALL/usr/bin
+     cp -P $ROOT/$PKG_BUILD/dtc $INSTALL/usr/bin
+ }
++
++makeinstall_host() {
++  make install PREFIX=$ROOT/$TOOLCHAIN
++}
 diff --git a/packages/tools/u-boot/package.mk b/packages/tools/u-boot/package.mk
 index a9c686e..df8a255 100644
 --- a/packages/tools/u-boot/package.mk
@@ -1150,11 +1162,11 @@ index 0000000..c899ba3
 +dd if="$RELEASE_DIR/3rdparty/bootloader/bl2" of="$DISK" conv=fsync,notrunc bs=512 seek=31 >"$SAVE_ERROR" 2>&1 || show_error
 +dd if="$RELEASE_DIR/3rdparty/bootloader/u-boot" of="$DISK" conv=fsync,notrunc bs=512 seek=63 >"$SAVE_ERROR" 2>&1 || show_error
 +dd if="$RELEASE_DIR/3rdparty/bootloader/tzsw" of="$DISK" conv=fsync,notrunc bs=512 seek=2111 >"$SAVE_ERROR" 2>&1 || show_error
-diff --git a/projects/Odroid_U2/linux/linux.arm.conf b/projects/Odroid_U2/linux/linux.arm.conf
+diff --git a/projects/Odroid_U2/linux/ddfddf8/linux.arm.conf b/projects/Odroid_U2/linux/ddfddf8/linux.arm.conf
 new file mode 100644
-index 0000000..b5e1b4e
+index 0000000..46662c2
 --- /dev/null
-+++ b/projects/Odroid_U2/linux/linux.arm.conf
++++ b/projects/Odroid_U2/linux/ddfddf8/linux.arm.conf
 @@ -0,0 +1,4228 @@
 +#
 +# Automatically generated file; DO NOT EDIT.
@@ -1202,7 +1214,7 @@ index 0000000..b5e1b4e
 +# CONFIG_KERNEL_LZO is not set
 +CONFIG_DEFAULT_HOSTNAME="@DISTRONAME@"
 +CONFIG_VERSION_SIGNATURE=""
-+# CONFIG_SWAP is not set
++CONFIG_SWAP=y
 +CONFIG_SYSVIPC=y
 +CONFIG_SYSVIPC_SYSCTL=y
 +CONFIG_POSIX_MQUEUE=y
@@ -5386,7 +5398,7 @@ index 0000000..b5e1b4e
 +# CONFIG_DDR is not set
 diff --git a/projects/Odroid_U2/options b/projects/Odroid_U2/options
 new file mode 100644
-index 0000000..bd927df
+index 0000000..b95fc86
 --- /dev/null
 +++ b/projects/Odroid_U2/options
 @@ -0,0 +1,155 @@
@@ -5525,7 +5537,7 @@ index 0000000..bd927df
 +    AMREMOTE_SUPPORT="no"
 +
 +  # build with swap support (yes / no)
-+    SWAP_SUPPORT="no"
++    SWAP_SUPPORT="yes"
 +
 +  # swap support enabled per default (yes / no)
 +    SWAP_ENABLED_DEFAULT="no"
@@ -8337,11 +8349,11 @@ index 0000000..7caecd9
 +     endif()
 +   endif()
 +   if(NOT APPLE)
-diff --git a/projects/Odroid_U2/patches/linux/linux-002-compiler-gcc.h.patch b/projects/Odroid_U2/patches/linux/linux-002-compiler-gcc.h.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-002-compiler-gcc.h.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-002-compiler-gcc.h.patch
 new file mode 100644
 index 0000000..46b4c8e
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-002-compiler-gcc.h.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-002-compiler-gcc.h.patch
 @@ -0,0 +1,327 @@
 +diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
 +index 24545cd..0c5d746 100644
@@ -8670,11 +8682,11 @@ index 0000000..46b4c8e
 +-#define __HAVE_BUILTIN_BSWAP64__
 +-#define __HAVE_BUILTIN_BSWAP16__
 +-#endif /* CONFIG_ARCH_USE_BUILTIN_BSWAP */
-diff --git a/projects/Odroid_U2/patches/linux/linux-003-no_dev_console.patch b/projects/Odroid_U2/patches/linux/linux-003-no_dev_console.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-003-no_dev_console.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-003-no_dev_console.patch
 new file mode 100644
 index 0000000..0ef8d8c
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-003-no_dev_console.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-003-no_dev_console.patch
 @@ -0,0 +1,19 @@
 +--- linux-odroid-3.8.13.21/init/main.c.orig	2014-05-09 12:07:09.436583808 -0400
 ++++ linux-odroid-3.8.13.21/init/main.c	2014-05-09 12:24:13.830397853 -0400
@@ -8695,11 +8707,11 @@ index 0000000..0ef8d8c
 + 	(void) sys_dup(0);
 + 	(void) sys_dup(0);
 + 	/*
-diff --git a/projects/Odroid_U2/patches/linux/linux-006_enable_utf8.patch b/projects/Odroid_U2/patches/linux/linux-006_enable_utf8.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-006_enable_utf8.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-006_enable_utf8.patch
 new file mode 100644
 index 0000000..bee1cf3
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-006_enable_utf8.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-006_enable_utf8.patch
 @@ -0,0 +1,25 @@
 +diff -Naur linux-2.6.31-rc4.orig/fs/fat/inode.c linux-2.6.31-rc4/fs/fat/inode.c
 +--- linux-2.6.31-rc4.orig/fs/fat/inode.c	2009-07-25 12:47:41.000000000 +0200
@@ -8726,11 +8738,11 @@ index 0000000..bee1cf3
 + 	popt->overriderockperm = 0;
 + 	popt->session=-1;
 + 	popt->sbsector=-1;
-diff --git a/projects/Odroid_U2/patches/linux/linux-010-perf_crosscompiling.patch b/projects/Odroid_U2/patches/linux/linux-010-perf_crosscompiling.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-010-perf_crosscompiling.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-010-perf_crosscompiling.patch
 new file mode 100644
 index 0000000..25601fc
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-010-perf_crosscompiling.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-010-perf_crosscompiling.patch
 @@ -0,0 +1,14 @@
 +diff --git a/tools/perf/Makefile b/tools/perf/Makefile
 +index b0f164b..ecb1af6 100644
@@ -8746,11 +8758,11 @@ index 0000000..25601fc
 + 		EXTLIBS += -lnewt -lslang
 + 		LIB_OBJS += $(OUTPUT)ui/browser.o
 +
-diff --git a/projects/Odroid_U2/patches/linux/linux-055-add_Formosa_eHome_Infrared_Receiver.patch b/projects/Odroid_U2/patches/linux/linux-055-add_Formosa_eHome_Infrared_Receiver.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-055-add_Formosa_eHome_Infrared_Receiver.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-055-add_Formosa_eHome_Infrared_Receiver.patch
 new file mode 100644
 index 0000000..e2afb63
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-055-add_Formosa_eHome_Infrared_Receiver.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-055-add_Formosa_eHome_Infrared_Receiver.patch
 @@ -0,0 +1,11 @@
 +--- linux-3.2.2.orig/drivers/media/rc/mceusb.c	2012-01-30 23:37:12.374473509 +0100
 ++++ linux-3.2.2/drivers/media/rc/mceusb.c	2012-01-30 23:40:57.989652931 +0100
@@ -8763,11 +8775,11 @@ index 0000000..e2afb63
 + 	/* Formosa aim / Trust MCE Infrared Receiver */
 + 	{ USB_DEVICE(VENDOR_FORMOSA, 0xe017),
 + 	  .driver_info = MCE_GEN2_NO_TX },
-diff --git a/projects/Odroid_U2/patches/linux/linux-056-add_Adaptec_eHome_Infrared_Receiver.patch b/projects/Odroid_U2/patches/linux/linux-056-add_Adaptec_eHome_Infrared_Receiver.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-056-add_Adaptec_eHome_Infrared_Receiver.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-056-add_Adaptec_eHome_Infrared_Receiver.patch
 new file mode 100644
 index 0000000..461a82e
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-056-add_Adaptec_eHome_Infrared_Receiver.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-056-add_Adaptec_eHome_Infrared_Receiver.patch
 @@ -0,0 +1,20 @@
 +diff -Naur linux-3.6.7/drivers/media/rc/mceusb.c linux-3.6.7.patch/drivers/media/rc/mceusb.c
 +--- linux-3.6.7/drivers/media/rc/mceusb.c	2012-11-29 04:45:51.142129739 +0100
@@ -8789,11 +8801,11 @@ index 0000000..461a82e
 + 	/* Terminating entry */
 + 	{ }
 + };
-diff --git a/projects/Odroid_U2/patches/linux/linux-057-Removed-MCE-customer-code-restriction-in-rc6-decode.patch b/projects/Odroid_U2/patches/linux/linux-057-Removed-MCE-customer-code-restriction-in-rc6-decode.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-Removed-MCE-customer-code-restriction-in-rc6-decode.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-Removed-MCE-customer-code-restriction-in-rc6-decode.patch
 new file mode 100644
 index 0000000..9f84e66
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-057-Removed-MCE-customer-code-restriction-in-rc6-decode.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-Removed-MCE-customer-code-restriction-in-rc6-decode.patch
 @@ -0,0 +1,22 @@
 +--- linux/drivers/media/rc/ir-rc6-decoder.c	2012-11-25 22:08:13.148418669 -0800
 ++++ linux.patch/drivers/media/rc/ir-rc6-decoder.c	2012-11-25 22:07:48.864417975 -0800
@@ -8817,11 +8829,11 @@ index 0000000..9f84e66
 + 				toggle = (scancode & RC6_6A_MCE_TOGGLE_MASK) ? 1 : 0;
 + 				scancode &= ~RC6_6A_MCE_TOGGLE_MASK;
 + 			} else {
-diff --git a/projects/Odroid_U2/patches/linux/linux-057-add_SMK_Manufacturing_Inc_Infrared_Receiver.patch b/projects/Odroid_U2/patches/linux/linux-057-add_SMK_Manufacturing_Inc_Infrared_Receiver.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-add_SMK_Manufacturing_Inc_Infrared_Receiver.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-add_SMK_Manufacturing_Inc_Infrared_Receiver.patch
 new file mode 100644
 index 0000000..67fc7a0
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-057-add_SMK_Manufacturing_Inc_Infrared_Receiver.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-add_SMK_Manufacturing_Inc_Infrared_Receiver.patch
 @@ -0,0 +1,13 @@
 +diff -Naur linux-3.9.4/drivers/media/rc/mceusb.c linux-3.9.4.patch/drivers/media/rc/mceusb.c
 +--- linux-3.9.4/drivers/media/rc/mceusb.c	2013-05-24 20:45:59.000000000 +0200
@@ -8836,11 +8848,11 @@ index 0000000..67fc7a0
 + 	/* Tatung eHome Infrared Transceiver */
 + 	{ USB_DEVICE(VENDOR_TATUNG, 0x9150) },
 + 	/* Shuttle eHome Infrared Transceiver */
-diff --git a/projects/Odroid_U2/patches/linux/linux-058.01-HID-Sony-upstream_patches.patch b/projects/Odroid_U2/patches/linux/linux-058.01-HID-Sony-upstream_patches.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.01-HID-Sony-upstream_patches.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.01-HID-Sony-upstream_patches.patch
 new file mode 100644
 index 0000000..82f2f33
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-058.01-HID-Sony-upstream_patches.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.01-HID-Sony-upstream_patches.patch
 @@ -0,0 +1,615 @@
 +diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
 +index b545124..419b7ca 100644
@@ -9457,11 +9469,11 @@ index 0000000..82f2f33
 + };
 + module_hid_driver(sony_driver);
 + 
-diff --git a/projects/Odroid_U2/patches/linux/linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch b/projects/Odroid_U2/patches/linux/linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch
 new file mode 100644
 index 0000000..abdc74f
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch
 @@ -0,0 +1,61 @@
 +Betreff: [RFC] hid/sony: add autorepeat for PS3 remotes
 +Von: David Dillow <dave@thedillows.org>
@@ -9524,11 +9536,11 @@ index 0000000..abdc74f
 + 
 +
 +
-diff --git a/projects/Odroid_U2/patches/linux/linux-058.06-hid_sony-add_SMK_link.patch b/projects/Odroid_U2/patches/linux/linux-058.06-hid_sony-add_SMK_link.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.06-hid_sony-add_SMK_link.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.06-hid_sony-add_SMK_link.patch
 new file mode 100644
 index 0000000..bc92ecf
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-058.06-hid_sony-add_SMK_link.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.06-hid_sony-add_SMK_link.patch
 @@ -0,0 +1,47 @@
 +commit 5a601d61d36236a667cc7d170b300d18dd6240c6
 +Author: Juan J. Sierralta <sierralta@gmail.com>
@@ -9577,11 +9589,11 @@ index 0000000..bc92ecf
 + MODULE_DEVICE_TABLE(hid, sony_devices);
 + 
 + static struct hid_driver sony_driver = {
-diff --git a/projects/Odroid_U2/patches/linux/linux-059-remove_some_xpad_pids-0.2.patch b/projects/Odroid_U2/patches/linux/linux-059-remove_some_xpad_pids-0.2.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-059-remove_some_xpad_pids-0.2.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-059-remove_some_xpad_pids-0.2.patch
 new file mode 100644
 index 0000000..4a6d1c7
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-059-remove_some_xpad_pids-0.2.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-059-remove_some_xpad_pids-0.2.patch
 @@ -0,0 +1,11 @@
 +diff -Naur linux-3.8.4/drivers/input/joystick/xpad.c linux-3.8.4.patch/drivers/input/joystick/xpad.c
 +--- linux-3.8.4/drivers/input/joystick/xpad.c	2013-03-20 21:11:19.000000000 +0100
@@ -9594,11 +9606,11 @@ index 0000000..4a6d1c7
 + 	{ 0x0000, 0x0000, "Generic X-Box pad", 0, XTYPE_UNKNOWN }
 + };
 + 
-diff --git a/projects/Odroid_U2/patches/linux/linux-060-add_AUGUST_DVB-T205.patch b/projects/Odroid_U2/patches/linux/linux-060-add_AUGUST_DVB-T205.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-060-add_AUGUST_DVB-T205.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-060-add_AUGUST_DVB-T205.patch
 new file mode 100644
 index 0000000..2f003dd
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-060-add_AUGUST_DVB-T205.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-060-add_AUGUST_DVB-T205.patch
 @@ -0,0 +1,15 @@
 +diff --git a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
 +index 2cc8ec7..985fa11 100644
@@ -9615,11 +9627,11 @@ index 0000000..2f003dd
 + };
 + MODULE_DEVICE_TABLE(usb, rtl28xxu_id_table);
 +
-diff --git a/projects/Odroid_U2/patches/linux/linux-061-valve-xpad-rework.patch b/projects/Odroid_U2/patches/linux/linux-061-valve-xpad-rework.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-061-valve-xpad-rework.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-061-valve-xpad-rework.patch
 new file mode 100644
 index 0000000..c485a63
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-061-valve-xpad-rework.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-061-valve-xpad-rework.patch
 @@ -0,0 +1,462 @@
 +--- a/drivers/input/joystick/xpad.c	2016-11-02 11:32:23.105562200 +0100
 ++++ b/drivers/input/joystick/xpad.c	2016-11-02 11:33:00.065676100 +0100
@@ -10083,11 +10095,11 @@ index 0000000..c485a63
 + 	xpad_deinit_output(xpad);
 + 
 + 	if (xpad->xtype == XTYPE_XBOX360W) {
-diff --git a/projects/Odroid_U2/patches/linux/linux-203-stb0899_enable_low_symbol_rate.patch b/projects/Odroid_U2/patches/linux/linux-203-stb0899_enable_low_symbol_rate.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-203-stb0899_enable_low_symbol_rate.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-203-stb0899_enable_low_symbol_rate.patch
 new file mode 100644
 index 0000000..f302b6c
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-203-stb0899_enable_low_symbol_rate.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-203-stb0899_enable_low_symbol_rate.patch
 @@ -0,0 +1,12 @@
 +diff -Naur linux-3.7.2/drivers/media/dvb-frontends/stb0899_drv.c linux-3.7.2.patch/drivers/media/dvb-frontends/stb0899_drv.c
 +--- linux-3.7.2/drivers/media/dvb-frontends/stb0899_drv.c	2013-01-11 18:19:28.000000000 +0100
@@ -10101,11 +10113,11 @@ index 0000000..f302b6c
 + 		.symbol_rate_max 	= 45000000,
 + 
 + 		.caps 			= FE_CAN_INVERSION_AUTO	|
-diff --git a/projects/Odroid_U2/patches/linux/linux-212-mantis_stb0899_faster_lock.patch b/projects/Odroid_U2/patches/linux/linux-212-mantis_stb0899_faster_lock.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-212-mantis_stb0899_faster_lock.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-212-mantis_stb0899_faster_lock.patch
 new file mode 100644
 index 0000000..eef4e1e
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-212-mantis_stb0899_faster_lock.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-212-mantis_stb0899_faster_lock.patch
 @@ -0,0 +1,138 @@
 +diff -Naur linux-3.7.2/drivers/media/dvb-frontends/stb0899_algo.c linux-3.7.2.patch/drivers/media/dvb-frontends/stb0899_algo.c
 +--- linux-3.7.2/drivers/media/dvb-frontends/stb0899_algo.c	2013-01-11 18:19:28.000000000 +0100
@@ -10245,11 +10257,11 @@ index 0000000..eef4e1e
 + 		internal->direction = -internal->direction; /* change zig zag direction */
 + 	} while ((internal->status != DATAOK) && next_loop);
 + 
-diff --git a/projects/Odroid_U2/patches/linux/linux-221-ngene-octopus.patch b/projects/Odroid_U2/patches/linux/linux-221-ngene-octopus.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-221-ngene-octopus.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-221-ngene-octopus.patch
 new file mode 100644
 index 0000000..2028503
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-221-ngene-octopus.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-221-ngene-octopus.patch
 @@ -0,0 +1,12552 @@
 +From c5891c83d5777a2e691c2a452a7f57a6b6a13344 Mon Sep 17 00:00:00 2001
 +From: Stefan Saraev <stefan@saraev.ca>
@@ -22803,11 +22815,11 @@ index 0000000..2028503
 +-While there's no proper fix for it, the driver should be kept in staging.
 +-
 +-Patches should be submitted to: linux-media@vger.kernel.org.
-diff --git a/projects/Odroid_U2/patches/linux/linux-222-stb0899_signal_quality.patch b/projects/Odroid_U2/patches/linux/linux-222-stb0899_signal_quality.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-222-stb0899_signal_quality.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-222-stb0899_signal_quality.patch
 new file mode 100644
 index 0000000..fd6539d
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-222-stb0899_signal_quality.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-222-stb0899_signal_quality.patch
 @@ -0,0 +1,62 @@
 +diff -Naur linux-3.7.2/drivers/media/dvb-frontends/stb0899_drv.c linux-3.7.2.patch/drivers/media/dvb-frontends/stb0899_drv.c
 +--- linux-3.7.2/drivers/media/dvb-frontends/stb0899_drv.c	2013-01-11 18:19:28.000000000 +0100
@@ -22871,11 +22883,11 @@ index 0000000..fd6539d
 + 			dprintk(state->verbose, FE_DEBUG, 1, "Es/N0 quant = %d (%d) estimate = %u (%d), C/N = %d * 0.1 dBm",
 + 				quant, quantn, est, estn, val);
 + 		}
-diff --git a/projects/Odroid_U2/patches/linux/linux-223-Fix-video-artifacts-with-tt-3600-s2-usb.patch b/projects/Odroid_U2/patches/linux/linux-223-Fix-video-artifacts-with-tt-3600-s2-usb.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-223-Fix-video-artifacts-with-tt-3600-s2-usb.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-223-Fix-video-artifacts-with-tt-3600-s2-usb.patch
 new file mode 100644
 index 0000000..7aaabc4
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-223-Fix-video-artifacts-with-tt-3600-s2-usb.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-223-Fix-video-artifacts-with-tt-3600-s2-usb.patch
 @@ -0,0 +1,17 @@
 +diff -Naur linux-3.7.9/drivers/media/usb/dvb-usb/pctv452e.c linux-3.7.9.patch/drivers/media/usb/dvb-usb/pctv452e.c
 +--- linux-3.7.9/drivers/media/usb/dvb-usb/pctv452e.c    2013-01-11 18:19:28.000000000 +0100
@@ -22894,11 +22906,11 @@ index 0000000..7aaabc4
 +						.framesize = 940,
 +						.interval = 1
 +					}
-diff --git a/projects/Odroid_U2/patches/linux/linux-701-linksys_aes2500_brcmfmac.patch b/projects/Odroid_U2/patches/linux/linux-701-linksys_aes2500_brcmfmac.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-701-linksys_aes2500_brcmfmac.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-701-linksys_aes2500_brcmfmac.patch
 new file mode 100644
 index 0000000..639a6ab
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-701-linksys_aes2500_brcmfmac.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-701-linksys_aes2500_brcmfmac.patch
 @@ -0,0 +1,21 @@
 +--- a/drivers/net/wireless/brcm80211/brcmfmac/usb.c	2013-07-21 16:06:37.443909481 +0200
 ++++ b/drivers/net/wireless/brcm80211/brcmfmac/usb.c	2013-07-21 16:11:10.696335476 +0200
@@ -22921,11 +22933,11 @@ index 0000000..639a6ab
 + 	/* special entry for device with firmware loaded and running */
 + 	{ USB_DEVICE(BRCMF_USB_VENDOR_ID_BROADCOM, BRCMF_USB_DEVICE_ID_BCMFW) },
 + 	{ }
-diff --git a/projects/Odroid_U2/patches/linux/linux-702-Support-for-cheap-Ralink-3070-WiFi-plug.patch b/projects/Odroid_U2/patches/linux/linux-702-Support-for-cheap-Ralink-3070-WiFi-plug.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-702-Support-for-cheap-Ralink-3070-WiFi-plug.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-702-Support-for-cheap-Ralink-3070-WiFi-plug.patch
 new file mode 100644
 index 0000000..e3dc6ca
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-702-Support-for-cheap-Ralink-3070-WiFi-plug.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-702-Support-for-cheap-Ralink-3070-WiFi-plug.patch
 @@ -0,0 +1,64 @@
 +diff --git a/drivers/net/wireless/rt2x00/rt2800.h b/drivers/net/wireless/rt2x00/rt2800.h
 +index a7630d5..9504d45 100644
@@ -22991,11 +23003,11 @@ index 0000000..e3dc6ca
 + 	case RF5372:
 + 	case RF5390:
 + 	case RF5392:
-diff --git a/projects/Odroid_U2/patches/linux/linux-704-Support-for-Ubiquiti-WifiStation.patch b/projects/Odroid_U2/patches/linux/linux-704-Support-for-Ubiquiti-WifiStation.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-704-Support-for-Ubiquiti-WifiStation.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-704-Support-for-Ubiquiti-WifiStation.patch
 new file mode 100644
 index 0000000..7932c07
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-704-Support-for-Ubiquiti-WifiStation.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-704-Support-for-Ubiquiti-WifiStation.patch
 @@ -0,0 +1,28 @@
 +From 62330f8f9b6105bfe201f52b7ed86ea6ce3d5901 Mon Sep 17 00:00:00 2001
 +From: popcornmix <popcornmix@gmail.com>
@@ -23025,11 +23037,11 @@ index 0000000..7932c07
 +-- 
 +1.8.4
 +
-diff --git a/projects/Odroid_U2/patches/linux/linux-705-Support-for-Buffalo-WLI-UC-G300HP-V1.patch b/projects/Odroid_U2/patches/linux/linux-705-Support-for-Buffalo-WLI-UC-G300HP-V1.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-705-Support-for-Buffalo-WLI-UC-G300HP-V1.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-705-Support-for-Buffalo-WLI-UC-G300HP-V1.patch
 new file mode 100644
 index 0000000..816af3b
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-705-Support-for-Buffalo-WLI-UC-G300HP-V1.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-705-Support-for-Buffalo-WLI-UC-G300HP-V1.patch
 @@ -0,0 +1,10 @@
 +--- a/drivers/net/wireless/rt2x00/rt2800usb.c	2013-10-08 15:14:44.844047190 +0200
 ++++ b/drivers/net/wireless/rt2x00/rt2800usb.c	2013-10-08 15:15:00.279904575 +0200
@@ -23041,11 +23053,11 @@ index 0000000..816af3b
 + 	{ USB_DEVICE(0x0411, 0x01ee) },
 + 	/* Corega */
 + 	{ USB_DEVICE(0x07aa, 0x002f) },
-diff --git a/projects/Odroid_U2/patches/linux/linux-706-Sitecom-N300.patch b/projects/Odroid_U2/patches/linux/linux-706-Sitecom-N300.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-706-Sitecom-N300.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-706-Sitecom-N300.patch
 new file mode 100644
 index 0000000..9f52eeb
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-706-Sitecom-N300.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-706-Sitecom-N300.patch
 @@ -0,0 +1,11 @@
 +diff -Naur linux-3.10.16/drivers/staging/rtl8712/usb_intf.c linux-3.10.16.patch/drivers/staging/rtl8712/usb_intf.c
 +--- linux-3.10.16/drivers/staging/rtl8712/usb_intf.c	2013-10-14 01:08:56.000000000 +0200
@@ -23058,11 +23070,11 @@ index 0000000..9f52eeb
 + 	/* Sweex */
 + 	{USB_DEVICE(0x177F, 0x0154)},
 + 	/* Thinkware */
-diff --git a/projects/Odroid_U2/patches/linux/linux-900-KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch b/projects/Odroid_U2/patches/linux/linux-900-KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-900-KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-900-KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
 new file mode 100644
 index 0000000..b211efc
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-900-KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-900-KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
 @@ -0,0 +1,81 @@
 +From a7c092a19768d6b6dbb5d4afea33136c4637d633 Mon Sep 17 00:00:00 2001
 +From: Yevgeny Pats <yevgeny@perception-point.io>
@@ -23145,11 +23157,11 @@ index 0000000..b211efc
 +-- 
 +2.10.1
 +
-diff --git a/projects/Odroid_U2/patches/linux/linux-901-mm-remove-gup_flags-FOLL_WRITE-games-from-__get_user.patch b/projects/Odroid_U2/patches/linux/linux-901-mm-remove-gup_flags-FOLL_WRITE-games-from-__get_user.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-901-mm-remove-gup_flags-FOLL_WRITE-games-from-__get_user.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-901-mm-remove-gup_flags-FOLL_WRITE-games-from-__get_user.patch
 new file mode 100644
 index 0000000..c7a0dfe
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-901-mm-remove-gup_flags-FOLL_WRITE-games-from-__get_user.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-901-mm-remove-gup_flags-FOLL_WRITE-games-from-__get_user.patch
 @@ -0,0 +1,101 @@
 +From 541267fab71436c4acb361f1557a881c3908b22e Mon Sep 17 00:00:00 2001
 +From: Linus Torvalds <torvalds@linux-foundation.org>
@@ -23252,11 +23264,11 @@ index 0000000..c7a0dfe
 +-- 
 +2.10.1
 +
-diff --git a/projects/Odroid_U2/patches/linux/linux-902-Revert-media-mfc-use-shipped-firmware-paths.patch b/projects/Odroid_U2/patches/linux/linux-902-Revert-media-mfc-use-shipped-firmware-paths.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-902-Revert-media-mfc-use-shipped-firmware-paths.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-902-Revert-media-mfc-use-shipped-firmware-paths.patch
 new file mode 100644
 index 0000000..da1d417
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-902-Revert-media-mfc-use-shipped-firmware-paths.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-902-Revert-media-mfc-use-shipped-firmware-paths.patch
 @@ -0,0 +1,35 @@
 +From 33ec211a483dd5fdc9c590f624ea395a237a59f1 Mon Sep 17 00:00:00 2001
 +From: Kevin Mihelich <kevin@archlinuxarm.org>
@@ -23293,11 +23305,11 @@ index 0000000..da1d417
 +-- 
 +2.10.1
 +
-diff --git a/projects/Odroid_U2/patches/linux/linux-903-Allow-mac-address-to-be-set-in-smsc95xx.patch b/projects/Odroid_U2/patches/linux/linux-903-Allow-mac-address-to-be-set-in-smsc95xx.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-903-Allow-mac-address-to-be-set-in-smsc95xx.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-903-Allow-mac-address-to-be-set-in-smsc95xx.patch
 new file mode 100644
 index 0000000..f1b29a0
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-903-Allow-mac-address-to-be-set-in-smsc95xx.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-903-Allow-mac-address-to-be-set-in-smsc95xx.patch
 @@ -0,0 +1,96 @@
 +From 9610e2bda9ccee379887600bac748aeb13a61cbe Mon Sep 17 00:00:00 2001
 +From: popcornmix <popcornmix@gmail.com>
@@ -23395,11 +23407,11 @@ index 0000000..f1b29a0
 +-- 
 +2.10.1
 +
-diff --git a/projects/Odroid_U2/patches/linux/linux-991-update-magic_h-header.patch b/projects/Odroid_U2/patches/linux/linux-991-update-magic_h-header.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-991-update-magic_h-header.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-991-update-magic_h-header.patch
 new file mode 100644
 index 0000000..aa534ca
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-991-update-magic_h-header.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-991-update-magic_h-header.patch
 @@ -0,0 +1,28 @@
 +diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
 +index 873e086..77c6031 100644
@@ -23429,11 +23441,11 @@ index 0000000..aa534ca
 ++#define BTRFS_TEST_MAGIC	0x73727279
 + 
 + #endif /* __LINUX_MAGIC_H__ */
-diff --git a/projects/Odroid_U2/patches/linux/linux-992-add-sctp-headers.patch b/projects/Odroid_U2/patches/linux/linux-992-add-sctp-headers.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-992-add-sctp-headers.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-992-add-sctp-headers.patch
 new file mode 100644
 index 0000000..b2f2424
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-992-add-sctp-headers.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-992-add-sctp-headers.patch
 @@ -0,0 +1,863 @@
 +diff --git a/include/uapi/linux/Kbuild b/include/uapi/linux/Kbuild
 +index 4e67194..c3dade1 100644
@@ -24298,11 +24310,11 @@ index 0000000..b2f2424
 ++};
 ++
 ++#endif /* _UAPI_SCTP_H */
-diff --git a/projects/Odroid_U2/patches/linux/linux-993-add-btrfs-headers.patch b/projects/Odroid_U2/patches/linux/linux-993-add-btrfs-headers.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-993-add-btrfs-headers.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-993-add-btrfs-headers.patch
 new file mode 100644
 index 0000000..016c58f
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-993-add-btrfs-headers.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-993-add-btrfs-headers.patch
 @@ -0,0 +1,652 @@
 +diff --git a/include/linux/btrfs.h b/include/linux/btrfs.h
 +new file mode 100644
@@ -24956,11 +24968,11 @@ index 0000000..016c58f
 ++				   struct btrfs_ioctl_feature_flags[3])
 ++
 ++#endif /* _UAPI_LINUX_BTRFS_H */
-diff --git a/projects/Odroid_U2/patches/linux/linux-994-remove-aufs-headers-install.patch b/projects/Odroid_U2/patches/linux/linux-994-remove-aufs-headers-install.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-994-remove-aufs-headers-install.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-994-remove-aufs-headers-install.patch
 new file mode 100644
 index 0000000..9a5fdf9
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-994-remove-aufs-headers-install.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-994-remove-aufs-headers-install.patch
 @@ -0,0 +1,12 @@
 +diff --git a/ubuntu/include/linux/Kbuild b/ubuntu/include/linux/Kbuild
 +index 50d9e8c..e69de29 100644
@@ -24974,11 +24986,11 @@ index 0000000..9a5fdf9
 ++++ b/ubuntu/include/uapi/linux/Kbuild
 +@@ -1 +0,0 @@
 +-header-y = aufs_type.h
-diff --git a/projects/Odroid_U2/patches/linux/linux-995-CX24120-13Z_frontend.patch b/projects/Odroid_U2/patches/linux/linux-995-CX24120-13Z_frontend.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-995-CX24120-13Z_frontend.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-995-CX24120-13Z_frontend.patch
 new file mode 100644
 index 0000000..41d0f1d
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-995-CX24120-13Z_frontend.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-995-CX24120-13Z_frontend.patch
 @@ -0,0 +1,1577 @@
 +http://patchwork.linuxtv.org/patch/10575/
 +modified for 3.7.10
@@ -26557,11 +26569,11 @@ index 0000000..41d0f1d
 + obj-$(CONFIG_DVB_TDA8083) += tda8083.o
 + obj-$(CONFIG_DVB_L64781) += l64781.o
 + obj-$(CONFIG_DVB_DIB3000MB) += dib3000mb.o
-diff --git a/projects/Odroid_U2/patches/linux/linux-999.03-mac80211-ignore-ECSA-in-probe-response-frames.patch b/projects/Odroid_U2/patches/linux/linux-999.03-mac80211-ignore-ECSA-in-probe-response-frames.patch
+diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-999.03-mac80211-ignore-ECSA-in-probe-response-frames.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-999.03-mac80211-ignore-ECSA-in-probe-response-frames.patch
 new file mode 100644
 index 0000000..e8674f9
 --- /dev/null
-+++ b/projects/Odroid_U2/patches/linux/linux-999.03-mac80211-ignore-ECSA-in-probe-response-frames.patch
++++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-999.03-mac80211-ignore-ECSA-in-probe-response-frames.patch
 @@ -0,0 +1,46 @@
 +From 9098cb577d0f4b2dd71f37988515686008b7c733 Mon Sep 17 00:00:00 2001
 +From: Stefan Saraev <stefan@saraev.ca>
@@ -26727,3 +26739,253 @@ index 0000000..56cf0a9
 + 		"elif test -e mmc 0 Image.itb; then; " \
 + 			"run boot_fit;" \
 + 		"elif test -e mmc 0 zImage; then; " \
+diff --git a/projects/Odroid_U2/patches/xorg-server/xorg-server-0005-mali-swapbuffers-fix.patch b/projects/Odroid_U2/patches/xorg-server/xorg-server-0005-mali-swapbuffers-fix.patch
+new file mode 100644
+index 0000000..0c81b0c
+--- /dev/null
++++ b/projects/Odroid_U2/patches/xorg-server/xorg-server-0005-mali-swapbuffers-fix.patch
+@@ -0,0 +1,244 @@
++---
++ hw/xfree86/dri2/dri2.c    |   28 ++++++++++++++
++ hw/xfree86/dri2/dri2.h    |    2 +
++ hw/xfree86/dri2/dri2ext.c |   86 +++++++++++++++++++++++++++++++++++++++-------
++ 3 files changed, 103 insertions(+), 13 deletions(-)
++
++--- a/hw/xfree86/dri2/dri2.c
+++++ b/hw/xfree86/dri2/dri2.c
++@@ -99,6 +99,7 @@ typedef struct _DRI2Drawable {
++     int swap_limit;             /* for N-buffering */
++     unsigned blocked[3];
++     Bool needInvalidate;
+++    Bool client_created;
++     int prime_id;
++     PixmapPtr prime_slave_pixmap;
++     PixmapPtr redirectpixmap;
++@@ -113,6 +114,7 @@ typedef struct _DRI2Screen {
++     int fd;
++     unsigned int lastSequence;
++     int prime_id;
+++    Bool need_async_swapbuffers_reply;
++ 
++     DRI2CreateBufferProcPtr CreateBuffer;
++     DRI2DestroyBufferProcPtr DestroyBuffer;
++@@ -243,6 +245,7 @@ DRI2AllocateDrawable(DrawablePtr pDraw)
++     if (pPriv == NULL)
++         return NULL;
++ 
+++    pPriv->client_created = FALSE;
++     pPriv->dri2_screen = ds;
++     pPriv->drawable = pDraw;
++     pPriv->width = pDraw->width;
++@@ -363,6 +366,15 @@ DRI2CreateDrawable2(ClientPtr client, Dr
++     int rc;
++ 
++     pPriv = DRI2GetDrawable(pDraw);
+++    if (pPriv && dri2_id_out == NULL && pPriv->client_created) {
+++        /* We already allocated a DRI2Drawable for this drawable, the client
+++         * has called into this function (so will receive invalidate events)
+++         * and now we're being called by the client again (we know this because
+++         * the caller doesn't care about the dri2_id). This means we don't need
+++         * to allocate another one, we have nothing else to do. */
+++        pPriv->prime_id = dri2_client->prime_id;
+++        return Success;
+++    }
++     if (pPriv == NULL)
++         pPriv = DRI2AllocateDrawable(pDraw);
++     if (pPriv == NULL)
++@@ -377,6 +389,11 @@ DRI2CreateDrawable2(ClientPtr client, Dr
++ 
++     if (dri2_id_out)
++         *dri2_id_out = dri2_id;
+++    else {
+++        /* The client has called in for the first time, it will now receive
+++         * invalidate events. Record this for later. */
+++        pPriv->client_created = TRUE;
+++    }
++ 
++     return Success;
++ }
++@@ -1088,7 +1105,11 @@ DRI2WaitSwap(ClientPtr client, DrawableP
++     return FALSE;
++ }
++ 
++-
+++Bool
+++DRI2NeedAsyncSwapBuffersReply(DrawablePtr pDraw)
+++{
+++    return DRI2GetScreen(pDraw->pScreen)->need_async_swapbuffers_reply;
+++}
++ 
++ int
++ DRI2SwapBuffers(ClientPtr client, DrawablePtr pDraw, CARD64 target_msc,
++@@ -1605,6 +1626,11 @@ DRI2ScreenInit(ScreenPtr pScreen, DRI2In
++ 
++         if (info->driverName) {
++             ds->driverNames[0] = info->driverName;
+++            /* Mali incorrectly assumes that a return from SwapBuffers means that
+++             * buffers have been swapped, it doesn't wait for the relevant event.
+++             * In this case, we work around this annoyance by delaying the
+++             * SwapBuffers reply until the swap has actually completed. */
+++            ds->need_async_swapbuffers_reply = strcmp(info->driverName, "armsoc") == 0;
++         } else {
++             ds->driverNames[0] = ds->driverNames[1] = dri2_probe_driver_name(pScreen, info);
++             if (!ds->driverNames[0])
++--- a/hw/xfree86/dri2/dri2ext.c
+++++ b/hw/xfree86/dri2/dri2ext.c
++@@ -53,6 +53,14 @@
++ 
++ static int DRI2EventBase;
++ 
+++/* Data shared by ProcDRI2SwapBuffers and the asynchronous callback
+++ * DRI2SwapEvent */
+++struct SwapBuffersData {
+++	CARD64 swap_target;
+++	int refcnt;
+++	DrawablePtr pDrawable;
+++	CARD16 sequence;
+++};
++ 
++ static Bool
++ validDrawable(ClientPtr client, XID drawable, Mask access_mode,
++@@ -366,6 +374,24 @@ load_swap_reply(xDRI2SwapBuffersReply *
++     rep->swap_lo = sbc & 0xffffffff;
++ }
++ 
+++static void swap_buffers_data_unref(struct SwapBuffersData *data)
+++{
+++	if (--data->refcnt == 0)
+++		free(data);
+++}
+++
+++static void send_swap_buffers_reply(ClientPtr client, struct SwapBuffersData *data)
+++{
+++    xDRI2SwapBuffersReply rep = {
+++        .type = X_Reply,
+++        .length = 0,
+++        .sequenceNumber = data->sequence,
+++    };
+++
+++    load_swap_reply(&rep, data->swap_target);
+++    WriteToClient(client, sizeof(xDRI2SwapBuffersReply), &rep);
+++}
+++
++ static CARD64
++ vals_to_card64(CARD32 lo, CARD32 hi)
++ {
++@@ -376,11 +402,11 @@ static void
++ DRI2SwapEvent(ClientPtr client, void *data, int type, CARD64 ust, CARD64 msc,
++               CARD32 sbc)
++ {
++-    DrawablePtr pDrawable = data;
+++    struct SwapBuffersData *sbdata = data;
++     xDRI2BufferSwapComplete2 event = {
++         .type = DRI2EventBase + DRI2_BufferSwapComplete,
++         .event_type = type,
++-        .drawable = pDrawable->id,
+++        .drawable = sbdata->pDrawable->id,
++         .ust_hi = (CARD64) ust >> 32,
++         .ust_lo = ust & 0xffffffff,
++         .msc_hi = (CARD64) msc >> 32,
++@@ -388,6 +414,12 @@ DRI2SwapEvent(ClientPtr client, void *da
++         .sbc = sbc
++     };
++ 
+++    if (DRI2NeedAsyncSwapBuffersReply(sbdata->pDrawable)) {
+++        send_swap_buffers_reply(client, sbdata);
+++        AttendClient(client);
+++    }
+++
+++    swap_buffers_data_unref(data);
++     WriteEventsToClient(client, 1, (xEvent *) &event);
++ }
++ 
++@@ -395,14 +427,11 @@ static int
++ ProcDRI2SwapBuffers(ClientPtr client)
++ {
++     REQUEST(xDRI2SwapBuffersReq);
++-    xDRI2SwapBuffersReply rep = {
++-        .type = X_Reply,
++-        .sequenceNumber = client->sequence,
++-        .length = 0
++-    };
++     DrawablePtr pDrawable;
++-    CARD64 target_msc, divisor, remainder, swap_target;
+++    CARD64 target_msc, divisor, remainder;
+++    struct SwapBuffersData *data;
++     int status;
+++    Bool need_async_swap_reply;
++ 
++     REQUEST_SIZE_MATCH(xDRI2SwapBuffersReq);
++ 
++@@ -410,6 +439,8 @@ ProcDRI2SwapBuffers(ClientPtr client)
++                        DixReadAccess | DixWriteAccess, &pDrawable, &status))
++         return status;
++ 
+++    need_async_swap_reply = DRI2NeedAsyncSwapBuffersReply(pDrawable);
+++
++     /*
++      * Ensures an out of control client can't exhaust our swap queue, and
++      * also orders swaps.
++@@ -417,18 +448,49 @@ ProcDRI2SwapBuffers(ClientPtr client)
++     if (DRI2ThrottleClient(client, pDrawable))
++         return Success;
++ 
+++    data = malloc(sizeof(struct SwapBuffersData));
+++    /* DRI2SwapEvent() above might feel like the obvious place to free the
+++     * data struct we just allocated. But consider the following sequence of
+++     * events (and understand that swap_target is stored in data):
+++     * 1. DRI2SwapBuffers accesses swap_target
+++     * 2. DRI2SwapBuffers calls into ScheduleSwap
+++     * 3. ScheduleSwap blits and calls DRI2SwapEvent before returning
+++     * 4. Back in DRI2SwapBuffers, we access swap_target again
+++     *
+++     * If we had freed data in step 3, we would have a use-after-free in
+++     * step 4.
+++     *
+++     * So, we set up a refcount of 2. One ref is owned by this function, and
+++     * one ref is owned by DRI2SwapEvent. We only free the data once both
+++     * functions are done. */
+++    data->refcnt = 2;
+++    data->pDrawable = pDrawable;
+++    data->sequence = client->sequence;
+++
++     target_msc = vals_to_card64(stuff->target_msc_lo, stuff->target_msc_hi);
++     divisor = vals_to_card64(stuff->divisor_lo, stuff->divisor_hi);
++     remainder = vals_to_card64(stuff->remainder_lo, stuff->remainder_hi);
++ 
+++    /* If we're sending the reply later, we need to avoid processing any
+++     * more requests from this client until that point. */
+++    if (need_async_swap_reply)
+++        IgnoreClient(client);
+++
++     status = DRI2SwapBuffers(client, pDrawable, target_msc, divisor, remainder,
++-                             &swap_target, DRI2SwapEvent, pDrawable);
++-    if (status != Success)
+++                             &data->swap_target, DRI2SwapEvent, data);
+++
+++    if (status != Success) {
+++        swap_buffers_data_unref(data);
+++        swap_buffers_data_unref(data);
+++        if (need_async_swap_reply)
+++            AttendClient(client);
++         return BadDrawable;
+++    }
++ 
++-    load_swap_reply(&rep, swap_target);
+++    if (!need_async_swap_reply)
+++        send_swap_buffers_reply(client, data);
++ 
++-    WriteToClient(client, sizeof(xDRI2SwapBuffersReply), &rep);
+++    swap_buffers_data_unref(data);
++ 
++     return Success;
++ }
++--- a/hw/xfree86/dri2/dri2.h
+++++ b/hw/xfree86/dri2/dri2.h
++@@ -359,4 +359,6 @@ extern _X_EXPORT int DRI2GetParam(Client
++                                   CARD64 *value);
++ 
++ extern _X_EXPORT DrawablePtr DRI2UpdatePrime(DrawablePtr pDraw, DRI2BufferPtr pDest);
+++
+++extern Bool DRI2NeedAsyncSwapBuffersReply(DrawablePtr pDraw);
++ #endif
