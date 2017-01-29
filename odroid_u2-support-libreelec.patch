@@ -23,10 +23,10 @@ index 79ad74a..c149380 100644
    done
  }
 diff --git a/packages/devel/libcec/package.mk b/packages/devel/libcec/package.mk
-index 71871a3..b36607c 100644
+index 61a5021..31a1f5f 100644
 --- a/packages/devel/libcec/package.mk
 +++ b/packages/devel/libcec/package.mk
-@@ -55,6 +55,12 @@ else
+@@ -54,6 +54,12 @@ else
    PKG_CMAKE_OPTS_TARGET="$PKG_CMAKE_OPTS_TARGET -DHAVE_AOCEC_API=0 -DHAVE_AMLOGIC_API=0"
  fi
  
@@ -47,10 +47,10 @@ index 0000000..31251c6
 @@ -0,0 +1 @@
 +KERNEL=="CEC", MODE="0660"
 diff --git a/packages/graphics/libdrm/package.mk b/packages/graphics/libdrm/package.mk
-index db29a1a..35f45c7 100644
+index f1cc2a0..4c21b68 100644
 --- a/packages/graphics/libdrm/package.mk
 +++ b/packages/graphics/libdrm/package.mk
-@@ -36,6 +36,7 @@ get_graphicdrivers
+@@ -35,6 +35,7 @@ get_graphicdrivers
  
  DRM_CONFIG="--disable-libkms --disable-intel --disable-radeon --disable-amdgpu"
  DRM_CONFIG="$DRM_CONFIG --disable-nouveau --disable-vmwgfx"
@@ -58,7 +58,7 @@ index db29a1a..35f45c7 100644
  
  for drv in $GRAPHIC_DRIVERS; do
    [ "$drv" = "i915" -o "$drv" = "i965" ] && \
-@@ -50,6 +51,10 @@ for drv in $GRAPHIC_DRIVERS; do
+@@ -49,6 +50,10 @@ for drv in $GRAPHIC_DRIVERS; do
    [ "$drv" = "vmware" ] && \
      DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-libkms/enable-libkms/'` && \
      DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-vmwgfx/enable-vmwgfx/'`
@@ -70,10 +70,10 @@ index db29a1a..35f45c7 100644
  
  PKG_CONFIGURE_OPTS_TARGET="--disable-udev \
 diff --git a/packages/graphics/mesa/package.mk b/packages/graphics/mesa/package.mk
-index 9254954..9e5c8c8 100644
+index 716b46a..9e1d4fd 100644
 --- a/packages/graphics/mesa/package.mk
 +++ b/packages/graphics/mesa/package.mk
-@@ -110,7 +110,7 @@ pre_configure_target() {
+@@ -109,7 +109,7 @@ pre_configure_target() {
  }
  
  post_makeinstall_target() {
@@ -83,10 +83,10 @@ index 9254954..9e5c8c8 100644
      rm -rf $INSTALL/usr/lib/libGL.so.1
      ln -sf libGL.so.1 $INSTALL/usr/lib/libGL.so
 diff --git a/packages/graphics/opengl-mali/package.mk b/packages/graphics/opengl-mali/package.mk
-index bf3bffb..e02090a 100644
+index 07531c3..5e46a43 100644
 --- a/packages/graphics/opengl-mali/package.mk
 +++ b/packages/graphics/opengl-mali/package.mk
-@@ -17,13 +17,15 @@
+@@ -17,12 +17,14 @@
  ################################################################################
  
  PKG_NAME="opengl-mali"
@@ -96,7 +96,6 @@ index bf3bffb..e02090a 100644
 +PKG_URL="http://people.piment-noir.org/~fraggle/download/odroid/$PKG_NAME-$PKG_VERSION.tar.xz"
 +PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET libXfixes libXrender libXcomposite libxcb"
 +PKG_SOURCE_DIR="${PKG_NAME}-${PKG_VERSION}"
- PKG_REV="1"
  PKG_ARCH="arm"
  PKG_LICENSE="nonfree"
 -PKG_SITE="http://www.arm.com/products/multimedia/mali-graphics-hardware/mali-400-mp.php"
@@ -106,7 +105,7 @@ index bf3bffb..e02090a 100644
  PKG_SECTION="graphics"
  PKG_SHORTDESC="opengl-mali: OpenGL-ES and Mali driver for Mali 400 GPUs"
  PKG_LONGDESC="opengl-mali: OpenGL-ES and Mali driver for Mali 400 GPUs"
-@@ -39,16 +41,40 @@ makeinstall_target() {
+@@ -38,16 +40,40 @@ makeinstall_target() {
    mkdir -p $SYSROOT_PREFIX/usr/include
      cp -PR src/include/* $SYSROOT_PREFIX/usr/include
  
@@ -230,10 +229,10 @@ index 0000000..c0324e7
 +    done
 +}
 diff --git a/packages/linux/package.mk b/packages/linux/package.mk
-index 55ffaa0..48a6919 100644
+index c8b0a3f..84c8fcf 100644
 --- a/packages/linux/package.mk
 +++ b/packages/linux/package.mk
-@@ -57,6 +57,11 @@ case "$LINUX" in
+@@ -56,6 +56,11 @@ case "$LINUX" in
      PKG_URL="$DISTRO_SRC/$PKG_SOURCE_NAME"
      PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET imx6-status-led imx6-soc-fan irqbalanced"
      ;;
@@ -243,9 +242,9 @@ index 55ffaa0..48a6919 100644
 +    PKG_URL="https://github.com/hardkernel/linux/archive/$PKG_VERSION.tar.gz"
 +    ;;
    *)
-     PKG_VERSION="4.9.3"
+     PKG_VERSION="4.9.5"
      PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
-@@ -242,6 +247,11 @@ makeinstall_init() {
+@@ -241,6 +246,11 @@ makeinstall_init() {
  }
  
  post_install() {
@@ -258,10 +257,10 @@ index 55ffaa0..48a6919 100644
      ln -sf /storage/.config/firmware/ $INSTALL/usr/lib/firmware/updates
  
 diff --git a/packages/mediacenter/kodi/package.mk b/packages/mediacenter/kodi/package.mk
-index b818cf6..769c117 100644
+index 1159774..aeef946 100644
 --- a/packages/mediacenter/kodi/package.mk
 +++ b/packages/mediacenter/kodi/package.mk
-@@ -199,6 +199,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
+@@ -198,6 +198,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
      CXXFLAGS="$CXXFLAGS -DHAS_IMXVPU -DLINUX -DEGL_API_FB"
    elif [ "$KODIPLAYER_DRIVER" = libamcodec ]; then
      KODI_PLAYER="-DENABLE_AML=ON"
@@ -271,20 +270,8 @@ index b818cf6..769c117 100644
    fi
  fi
  
-diff --git a/packages/tools/dtc/package.mk b/packages/tools/dtc/package.mk
-index a558731..77eb56c 100644
---- a/packages/tools/dtc/package.mk
-+++ b/packages/tools/dtc/package.mk
-@@ -36,3 +36,7 @@ makeinstall_target() {
-   mkdir -p $INSTALL/usr/bin
-     cp -P $ROOT/$PKG_BUILD/dtc $INSTALL/usr/bin
- }
-+
-+makeinstall_host() {
-+  make install PREFIX=$ROOT/$TOOLCHAIN
-+}
 diff --git a/packages/tools/u-boot/package.mk b/packages/tools/u-boot/package.mk
-index a9c686e..13190b6 100644
+index 488ad79..f97bb07 100644
 --- a/packages/tools/u-boot/package.mk
 +++ b/packages/tools/u-boot/package.mk
 @@ -18,20 +18,32 @@
@@ -331,10 +318,10 @@ index a9c686e..13190b6 100644
 +    PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET odroid-u2-bootloader"
 +    ;;
 +esac
- PKG_REV="1"
  PKG_ARCH="arm aarch64"
  PKG_LICENSE="GPL"
-@@ -58,8 +70,9 @@ pre_configure_target() {
+ PKG_SECTION="tools"
+@@ -57,8 +69,9 @@ pre_configure_target() {
    MAKEFLAGS=-j1
  
  # copy compiler-gcc5.h to compiler-gcc6. for fake building
@@ -346,7 +333,7 @@ index a9c686e..13190b6 100644
  }
  
  make_target() {
-@@ -130,15 +143,34 @@ makeinstall_target() {
+@@ -129,15 +142,34 @@ makeinstall_target() {
  
    cp -PR $PROJECT_DIR/$PROJECT/bootloader/uEnv*.txt $INSTALL/usr/share/bootloader 2>/dev/null || :
  
@@ -836,10 +823,10 @@ index 0000000..d973c8c
 +KERNEL=="ump", MODE="0777", GROUP="video"
 +KERNEL=="umplock", MODE="0777", GROUP="video"
 diff --git a/packages/x11/lib/libXfixes/package.mk b/packages/x11/lib/libXfixes/package.mk
-index 87edcd1..27f95eb 100644
+index cadfda3..e88f3ff 100644
 --- a/packages/x11/lib/libXfixes/package.mk
 +++ b/packages/x11/lib/libXfixes/package.mk
-@@ -31,7 +31,11 @@ PKG_LONGDESC="X Fixes Library"
+@@ -30,7 +30,11 @@ PKG_LONGDESC="X Fixes Library"
  PKG_IS_ADDON="no"
  PKG_AUTORECONF="no"
  
@@ -854,7 +841,7 @@ index 87edcd1..27f95eb 100644
    export CFLAGS="$CFLAGS -fPIC"
 diff --git a/projects/Odroid_U2/bootloader/boot.ini b/projects/Odroid_U2/bootloader/boot.ini
 new file mode 100644
-index 0000000..6acc2f3
+index 0000000..5444e7b
 --- /dev/null
 +++ b/projects/Odroid_U2/bootloader/boot.ini
 @@ -0,0 +1,62 @@
@@ -909,7 +896,7 @@ index 0000000..6acc2f3
 +#  
 +#------------------------------------------------------------------------------------------------------
 +setenv kernel "fatload mmc 0:1 40008000 KERNEL" 
-+setenv bootcmd "${kernel}; bootm 40008000 -"
++setenv bootcmd "${kernel}; bootz 40008000 -"
 +
 +#------------------------------------------------------------------------------------------------------
 +#
