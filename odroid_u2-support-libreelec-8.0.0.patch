@@ -1,18 +1,18 @@
 diff --git a/config/graphic b/config/graphic
-index d4fe6b7..19fa7db 100644
+index 79ad74a..c149380 100644
 --- a/config/graphic
 +++ b/config/graphic
 @@ -12,7 +12,7 @@ fi
  
  get_graphicdrivers() {
    if [ "$GRAPHIC_DRIVERS" = "all" ]; then
--    GRAPHIC_DRIVERS="i915 i965 r200 r300 r600 nvidia vmware"
-+    GRAPHIC_DRIVERS="armsoc i915 i965 r200 r300 r600 nvidia vmware"
+-    GRAPHIC_DRIVERS="i915 i965 r200 r300 r600 nvidia vmware virtualbox"
++    GRAPHIC_DRIVERS="armsoc i915 i965 r200 r300 r600 nvidia vmware virtualbox"
    fi
  
    for drv in $GRAPHIC_DRIVERS; do
-@@ -76,5 +76,10 @@ get_graphicdrivers() {
-       XORG_DRIVERS="$XORG_DRIVERS vmware"
+@@ -77,5 +77,10 @@ get_graphicdrivers() {
+ #      LLVM_SUPPORT="yes"
      fi
  
 +    if [ "$drv" = "armsoc" ]; then
@@ -47,7 +47,7 @@ index 0000000..31251c6
 @@ -0,0 +1 @@
 +KERNEL=="CEC", MODE="0660"
 diff --git a/packages/graphics/libdrm/package.mk b/packages/graphics/libdrm/package.mk
-index 757de8a..aa540ff 100644
+index f1cc2a0..4c21b68 100644
 --- a/packages/graphics/libdrm/package.mk
 +++ b/packages/graphics/libdrm/package.mk
 @@ -35,6 +35,7 @@ get_graphicdrivers
@@ -70,7 +70,7 @@ index 757de8a..aa540ff 100644
  
  PKG_CONFIGURE_OPTS_TARGET="--disable-udev \
 diff --git a/packages/graphics/mesa/package.mk b/packages/graphics/mesa/package.mk
-index 32d69ab..f6a5486 100644
+index 716b46a..9e1d4fd 100644
 --- a/packages/graphics/mesa/package.mk
 +++ b/packages/graphics/mesa/package.mk
 @@ -109,7 +109,7 @@ pre_configure_target() {
@@ -229,7 +229,7 @@ index 0000000..c0324e7
 +    done
 +}
 diff --git a/packages/linux/package.mk b/packages/linux/package.mk
-index fd4ec6f..15327d7 100644
+index c939158..0fd4482 100644
 --- a/packages/linux/package.mk
 +++ b/packages/linux/package.mk
 @@ -58,6 +58,11 @@ case "$LINUX" in
@@ -242,7 +242,7 @@ index fd4ec6f..15327d7 100644
 +    PKG_URL="https://github.com/hardkernel/linux/archive/$PKG_VERSION.tar.gz"
 +    ;;
    *)
-     PKG_VERSION="4.9.9"
+     PKG_VERSION="4.9.8"
      PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
 @@ -243,6 +248,11 @@ makeinstall_init() {
  }
@@ -257,10 +257,10 @@ index fd4ec6f..15327d7 100644
      ln -sf /storage/.config/firmware/ $INSTALL/usr/lib/firmware/updates
  
 diff --git a/packages/mediacenter/kodi/package.mk b/packages/mediacenter/kodi/package.mk
-index 223a45c..034b46f 100644
+index 5090d0c..30abcef 100644
 --- a/packages/mediacenter/kodi/package.mk
 +++ b/packages/mediacenter/kodi/package.mk
-@@ -196,6 +196,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
+@@ -198,6 +198,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
      CXXFLAGS="$CXXFLAGS -DHAS_IMXVPU -DLINUX -DEGL_API_FB"
    elif [ "$KODIPLAYER_DRIVER" = libamcodec ]; then
      KODI_PLAYER="-DENABLE_AML=ON"
@@ -271,19 +271,19 @@ index 223a45c..034b46f 100644
  fi
  
 diff --git a/packages/tools/dtc/package.mk b/packages/tools/dtc/package.mk
-index 4177434..27248cc 100644
+index 49b53a7..c50ff2c 100644
 --- a/packages/tools/dtc/package.mk
 +++ b/packages/tools/dtc/package.mk
-@@ -37,6 +37,5 @@ makeinstall_target() {
+@@ -35,3 +35,7 @@ makeinstall_target() {
+   mkdir -p $INSTALL/usr/bin
+     cp -P $ROOT/$PKG_BUILD/dtc $INSTALL/usr/bin
  }
- 
- makeinstall_host() {
--  mkdir -p $INSTALL/usr/bin
--    cp -P $PKG_BUILD/dtc $INSTALL/usr/bin
-+  make install PREFIX=$TOOLCHAIN
- }
++
++makeinstall_host() {
++  make install PREFIX=$ROOT/$TOOLCHAIN
++}
 diff --git a/packages/tools/u-boot/package.mk b/packages/tools/u-boot/package.mk
-index 16b2884..f1653de 100644
+index 6f69747..1ddde00 100644
 --- a/packages/tools/u-boot/package.mk
 +++ b/packages/tools/u-boot/package.mk
 @@ -18,22 +18,34 @@
@@ -297,15 +297,6 @@ index 16b2884..f1653de 100644
 -  PKG_URL="https://github.com/SolidRun/u-boot-imx6/archive/$PKG_COMMIT.tar.gz"
 -  PKG_SOURCE_NAME="$PKG_NAME-sr-$PKG_VERSION.tar.gz"
 -  PKG_SOURCE_DIR="$PKG_NAME-imx6-${PKG_COMMIT}*"
--  [ -n "$UBOOT_CONFIG_V2" ] && PKG_DEPENDS_TARGET="toolchain u-boot-v2"
--elif [ "$UBOOT_VERSION" = "hardkernel" ]; then
--  PKG_VERSION="6e4e886"
--  PKG_SITE="https://github.com/hardkernel/u-boot"
--  PKG_URL="https://github.com/hardkernel/u-boot/archive/$PKG_VERSION.tar.gz"
--  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gcc-linaro-aarch64-elf:host gcc-linaro-arm-eabi:host"
--else
--  exit 0
--fi
 +case "$UBOOT_VERSION" in
 +  "imx6-cuboxi")
 +    PKG_COMMIT="c8d1200"
@@ -314,7 +305,15 @@ index 16b2884..f1653de 100644
 +    PKG_URL="https://github.com/SolidRun/u-boot-imx6/archive/$PKG_COMMIT.tar.gz"
 +    PKG_SOURCE_NAME="$PKG_NAME-sr-$PKG_VERSION.tar.gz"
 +    PKG_SOURCE_DIR="$PKG_NAME-imx6-${PKG_COMMIT}*"
-+    [ -n "$UBOOT_CONFIG_V2" ] && PKG_DEPENDS_TARGET="toolchain u-boot-v2"
+   [ -n "$UBOOT_CONFIG_V2" ] && PKG_DEPENDS_TARGET="toolchain u-boot-v2"
+-elif [ "$UBOOT_VERSION" = "hardkernel" ]; then
+-  PKG_VERSION="6e4e886"
+-  PKG_SITE="https://github.com/hardkernel/u-boot"
+-  PKG_URL="https://github.com/hardkernel/u-boot/archive/$PKG_VERSION.tar.gz"
+-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gcc-linaro-aarch64-elf:host gcc-linaro-arm-eabi:host"
+-else
+-  exit 0
+-fi
 +    ;;
 +  "hardkernel")
 +    PKG_VERSION="6e4e886"
@@ -364,7 +363,7 @@ index 16b2884..f1653de 100644
    case $PROJECT in
      Odroid_C2)
        cp -PRv $PKG_DIR/scripts/update-c2.sh $INSTALL/usr/share/bootloader/update.sh
-       cp -PRv $PKG_BUILD/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
+       cp -PRv $ROOT/$PKG_BUILD/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
 -      if [ -f $PROJECT_DIR/$PROJECT/splash/boot-logo.bmp.gz ]; then
 -        cp -PRv $PROJECT_DIR/$PROJECT/splash/boot-logo.bmp.gz $INSTALL/usr/share/bootloader
 -      elif [ -f $DISTRO_DIR/$DISTRO/splash/boot-logo.bmp.gz ]; then
@@ -373,14 +372,14 @@ index 16b2884..f1653de 100644
 +      ;;
 +    Odroid_U2)
 +      # FIXME: this code path is more specific to mainline u-boot version than a project
-+      if [ -f "$PKG_BUILD/u-boot-dtb.bin" ]; then
-+        cp -PRv $PKG_BUILD/u-boot-dtb.bin $INSTALL/usr/share/bootloader/u-boot
-+      elif [ -f "$PKG_BUILD/u-boot.bin" ]; then
-+        cp -PRv $PKG_BUILD/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
-+      elif [ -f "$PKG_BUILD/sd_fuse/u-boot.bin" ]; then
-+        cp -PRv $PKG_BUILD/sd_fuse/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
-+      elif [ -f "$PKG_BUILD/build/u-boot.bin" ]; then
-+        cp -PRv $PKG_BUILD/build/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
++      if [ -f "$ROOT/$PKG_BUILD/u-boot-dtb.bin" ]; then
++        cp -PRv $ROOT/$PKG_BUILD/u-boot-dtb.bin $INSTALL/usr/share/bootloader/u-boot
++      elif [ -f "$ROOT/$PKG_BUILD/u-boot.bin" ]; then
++        cp -PRv $ROOT/$PKG_BUILD/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
++      elif [ -f "$ROOT/$PKG_BUILD/sd_fuse/u-boot.bin" ]; then
++        cp -PRv $ROOT/$PKG_BUILD/sd_fuse/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
++      elif [ -f "$ROOT/$PKG_BUILD/build/u-boot.bin" ]; then
++        cp -PRv $ROOT/$PKG_BUILD/build/u-boot.bin $INSTALL/usr/share/bootloader/u-boot
        fi
 +      cp -PRv $PKG_DIR/scripts/update-u2.sh $INSTALL/usr/share/bootloader/update.sh
 +      mk_u-boot_splash
