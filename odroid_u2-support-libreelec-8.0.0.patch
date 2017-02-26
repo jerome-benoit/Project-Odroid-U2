@@ -23,7 +23,7 @@ index 79ad74a..c149380 100644
    done
  }
 diff --git a/packages/devel/libcec/package.mk b/packages/devel/libcec/package.mk
-index 969a650..f3d095b 100644
+index 969a650..ab32b4d 100644
 --- a/packages/devel/libcec/package.mk
 +++ b/packages/devel/libcec/package.mk
 @@ -61,6 +61,12 @@ else
@@ -39,6 +39,22 @@ index 969a650..f3d095b 100644
  pre_configure_target() {
    if [ "$KODIPLAYER_DRIVER" = "bcm2835-firmware" ]; then
      export CXXFLAGS="$CXXFLAGS \
+@@ -77,3 +83,15 @@ post_makeinstall_target() {
+     mv $INSTALL/usr/lib/python2.7/dist-packages $INSTALL/usr/lib/python2.7/site-packages
+   fi
+ }
++
++post_install() {
++  case $PROJECT in
++    Odroid_U2)
++      cat > $INSTALL/etc/profile.d/20-cec-hdmi-port.conf << EoF
++# Default:
++# CEC_HDMI_PORT=1
++EoF
++      ln -sfn /storage/.config/cec-hdmi-port.conf $INSTALL/etc/profile.d/20-cec-hdmi-port.conf
++    ;;
++  esac
++}
 diff --git a/packages/devel/libcec/udev.d/50-cec.rules b/packages/devel/libcec/udev.d/50-cec.rules
 new file mode 100644
 index 0000000..31251c6
