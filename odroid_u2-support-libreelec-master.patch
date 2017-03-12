@@ -23,7 +23,7 @@ index d4fe6b7..19fa7db 100644
    done
  }
 diff --git a/packages/devel/libcec/package.mk b/packages/devel/libcec/package.mk
-index 969a650..ab32b4d 100644
+index 969a650..d4ed7e8 100644
 --- a/packages/devel/libcec/package.mk
 +++ b/packages/devel/libcec/package.mk
 @@ -61,6 +61,12 @@ else
@@ -39,7 +39,7 @@ index 969a650..ab32b4d 100644
  pre_configure_target() {
    if [ "$KODIPLAYER_DRIVER" = "bcm2835-firmware" ]; then
      export CXXFLAGS="$CXXFLAGS \
-@@ -77,3 +83,15 @@ post_makeinstall_target() {
+@@ -77,3 +83,16 @@ post_makeinstall_target() {
      mv $INSTALL/usr/lib/python2.7/dist-packages $INSTALL/usr/lib/python2.7/site-packages
    fi
  }
@@ -47,7 +47,8 @@ index 969a650..ab32b4d 100644
 +post_install() {
 +  case $PROJECT in
 +    Odroid_U2)
-+      cat > $INSTALL/etc/profile.d/20-cec-hdmi-port.conf << EoF
++      mkdir -p $INSTALL/usr/config
++        cat > $INSTALL/usr/config/cec-hdmi-port.conf << EoF
 +# Default:
 +# CEC_HDMI_PORT=1
 +EoF
@@ -63,20 +64,20 @@ index 0000000..31251c6
 @@ -0,0 +1 @@
 +KERNEL=="CEC", MODE="0660"
 diff --git a/packages/graphics/libdrm/package.mk b/packages/graphics/libdrm/package.mk
-index 757de8a..aa540ff 100644
+index 71eccb0..41b0cee 100644
 --- a/packages/graphics/libdrm/package.mk
 +++ b/packages/graphics/libdrm/package.mk
 @@ -35,6 +35,7 @@ get_graphicdrivers
  
- DRM_CONFIG="--disable-libkms --disable-intel --disable-radeon --disable-amdgpu"
+ DRM_CONFIG="--disable-intel --disable-radeon --disable-amdgpu"
  DRM_CONFIG="$DRM_CONFIG --disable-nouveau --disable-vmwgfx"
 +DRM_CONFIG="$DRM_CONFIG --disable-exynos-experimental-api"
  
  for drv in $GRAPHIC_DRIVERS; do
    [ "$drv" = "i915" -o "$drv" = "i965" ] && \
-@@ -49,6 +50,10 @@ for drv in $GRAPHIC_DRIVERS; do
+@@ -46,6 +47,10 @@ for drv in $GRAPHIC_DRIVERS; do
+ 
    [ "$drv" = "vmware" ] && \
-     DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-libkms/enable-libkms/'` && \
      DRM_CONFIG=`echo $DRM_CONFIG | sed -e 's/disable-vmwgfx/enable-vmwgfx/'`
 +
 +  [ "$drv" = "armsoc" ] && \
@@ -86,7 +87,7 @@ index 757de8a..aa540ff 100644
  
  PKG_CONFIGURE_OPTS_TARGET="--disable-udev \
 diff --git a/packages/graphics/mesa/package.mk b/packages/graphics/mesa/package.mk
-index 32d69ab..f6a5486 100644
+index 5165319..e52591a 100644
 --- a/packages/graphics/mesa/package.mk
 +++ b/packages/graphics/mesa/package.mk
 @@ -109,7 +109,7 @@ pre_configure_target() {
@@ -273,7 +274,7 @@ index 6471cbf..dbce420 100644
      ln -sf /storage/.config/firmware/ $INSTALL/usr/lib/firmware/updates
  
 diff --git a/packages/mediacenter/kodi/package.mk b/packages/mediacenter/kodi/package.mk
-index 223a45c..034b46f 100644
+index 3b32737..c3f58b0 100644
 --- a/packages/mediacenter/kodi/package.mk
 +++ b/packages/mediacenter/kodi/package.mk
 @@ -196,6 +196,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
