@@ -87,7 +87,7 @@ index f1cc2a0..4c21b68 100644
  
  PKG_CONFIGURE_OPTS_TARGET="--disable-udev \
 diff --git a/packages/graphics/mesa/package.mk b/packages/graphics/mesa/package.mk
-index 716b46a..9e1d4fd 100644
+index f5c0153..6a95bca 100644
 --- a/packages/graphics/mesa/package.mk
 +++ b/packages/graphics/mesa/package.mk
 @@ -109,7 +109,7 @@ pre_configure_target() {
@@ -246,11 +246,11 @@ index 0000000..c0324e7
 +    done
 +}
 diff --git a/packages/linux/package.mk b/packages/linux/package.mk
-index 211a6cd..22a744c 100644
+index 4f94938..98e27db 100644
 --- a/packages/linux/package.mk
 +++ b/packages/linux/package.mk
 @@ -58,6 +58,11 @@ case "$LINUX" in
-     PKG_SOURCE_DIR="xbian-sources-kernel-${PKG_COMMIT}*"   
+     PKG_SOURCE_DIR="xbian-sources-kernel-${PKG_COMMIT}*"
      PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET imx6-status-led imx6-soc-fan irqbalanced"
      ;;
 +  mfc-3.8)
@@ -274,7 +274,7 @@ index 211a6cd..22a744c 100644
      ln -sf /storage/.config/firmware/ $INSTALL/usr/lib/firmware/updates
  
 diff --git a/packages/mediacenter/kodi/package.mk b/packages/mediacenter/kodi/package.mk
-index cd4adb3..2fa0aa3 100644
+index 8163cb9..947cf7a 100644
 --- a/packages/mediacenter/kodi/package.mk
 +++ b/packages/mediacenter/kodi/package.mk
 @@ -198,6 +198,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then

@@ -1,27 +1,24 @@
 diff --git a/config/graphic b/config/graphic
-index d4fe6b7..19fa7db 100644
+index 285b13b..982ffa8 100644
 --- a/config/graphic
 +++ b/config/graphic
-@@ -12,7 +12,7 @@ fi
+@@ -12,10 +12,15 @@ fi
  
  get_graphicdrivers() {
    if [ "$GRAPHIC_DRIVERS" = "all" ]; then
--    GRAPHIC_DRIVERS="i915 i965 r200 r300 r600 nvidia vmware"
-+    GRAPHIC_DRIVERS="armsoc i915 i965 r200 r300 r600 nvidia vmware"
+-    GRAPHIC_DRIVERS="i915 i965 r200 r300 r600 radeonsi nvidia nvidia-legacy vmware virtio"
++    GRAPHIC_DRIVERS="armsoc i915 i965 r200 r300 r600 radeonsi nvidia nvidia-legacy vmware virtio"
    fi
  
    for drv in $GRAPHIC_DRIVERS; do
-@@ -76,5 +76,10 @@ get_graphicdrivers() {
-       XORG_DRIVERS="$XORG_DRIVERS vmware"
-     fi
- 
 +    if [ "$drv" = "armsoc" ]; then
 +      XORG_DRIVERS="$XORG_DRIVERS armsoc"
 +      COMPOSITE_SUPPORT="yes"
 +    fi
 +
-   done
- }
+     if [ "$drv" = "i915" ]; then
+       DRI_DRIVERS="$DRI_DRIVERS,i915"
+       XORG_DRIVERS="$XORG_DRIVERS intel"
 diff --git a/packages/devel/libcec/package.mk b/packages/devel/libcec/package.mk
 index 969a650..d4ed7e8 100644
 --- a/packages/devel/libcec/package.mk
@@ -87,7 +84,7 @@ index 71eccb0..41b0cee 100644
  
  PKG_CONFIGURE_OPTS_TARGET="--disable-udev \
 diff --git a/packages/graphics/mesa/package.mk b/packages/graphics/mesa/package.mk
-index 5165319..e52591a 100644
+index 5e3dc37..c9efef4 100644
 --- a/packages/graphics/mesa/package.mk
 +++ b/packages/graphics/mesa/package.mk
 @@ -109,7 +109,7 @@ pre_configure_target() {
@@ -246,7 +243,7 @@ index 0000000..c0324e7
 +    done
 +}
 diff --git a/packages/linux/package.mk b/packages/linux/package.mk
-index 6471cbf..dbce420 100644
+index 8a212a7..207677e 100644
 --- a/packages/linux/package.mk
 +++ b/packages/linux/package.mk
 @@ -58,6 +58,11 @@ case "$LINUX" in
@@ -259,9 +256,9 @@ index 6471cbf..dbce420 100644
 +    PKG_URL="https://github.com/hardkernel/linux/archive/$PKG_VERSION.tar.gz"
 +    ;;
    *)
-     PKG_VERSION="4.10"
+     PKG_VERSION="4.10.4"
      PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
-@@ -243,6 +248,11 @@ makeinstall_init() {
+@@ -247,6 +252,11 @@ makeinstall_init() {
  }
  
  post_install() {
@@ -274,10 +271,10 @@ index 6471cbf..dbce420 100644
      ln -sf /storage/.config/firmware/ $INSTALL/usr/lib/firmware/updates
  
 diff --git a/packages/mediacenter/kodi/package.mk b/packages/mediacenter/kodi/package.mk
-index 3b32737..c3f58b0 100644
+index 9256ec4..ca71cf8 100644
 --- a/packages/mediacenter/kodi/package.mk
 +++ b/packages/mediacenter/kodi/package.mk
-@@ -196,6 +196,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
+@@ -200,6 +200,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
      CXXFLAGS="$CXXFLAGS -DHAS_IMXVPU -DLINUX -DEGL_API_FB"
    elif [ "$KODIPLAYER_DRIVER" = libamcodec ]; then
      KODI_PLAYER="-DENABLE_AML=ON"
