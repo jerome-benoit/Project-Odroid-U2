@@ -1,5 +1,5 @@
 diff --git a/config/graphic b/config/graphic
-index 79ad74a..29cd343 100644
+index 79ad74a53..29cd343f3 100644
 --- a/config/graphic
 +++ b/config/graphic
 @@ -12,10 +12,15 @@ fi
@@ -20,10 +20,10 @@ index 79ad74a..29cd343 100644
        DRI_DRIVERS="$DRI_DRIVERS,i915"
        XORG_DRIVERS="$XORG_DRIVERS intel"
 diff --git a/packages/devel/libcec/package.mk b/packages/devel/libcec/package.mk
-index 969a650..d4ed7e8 100644
+index 6535bc6b0..ea0914732 100644
 --- a/packages/devel/libcec/package.mk
 +++ b/packages/devel/libcec/package.mk
-@@ -61,6 +61,12 @@ else
+@@ -55,6 +55,12 @@ else
    PKG_CMAKE_OPTS_TARGET="$PKG_CMAKE_OPTS_TARGET -DHAVE_AOCEC_API=0 -DHAVE_AMLOGIC_API=0"
  fi
  
@@ -36,7 +36,7 @@ index 969a650..d4ed7e8 100644
  pre_configure_target() {
    if [ "$KODIPLAYER_DRIVER" = "bcm2835-firmware" ]; then
      export CXXFLAGS="$CXXFLAGS \
-@@ -77,3 +83,16 @@ post_makeinstall_target() {
+@@ -71,3 +77,16 @@ post_makeinstall_target() {
      mv $INSTALL/usr/lib/python2.7/dist-packages $INSTALL/usr/lib/python2.7/site-packages
    fi
  }
@@ -55,13 +55,13 @@ index 969a650..d4ed7e8 100644
 +}
 diff --git a/packages/devel/libcec/udev.d/50-cec.rules b/packages/devel/libcec/udev.d/50-cec.rules
 new file mode 100644
-index 0000000..31251c6
+index 000000000..31251c695
 --- /dev/null
 +++ b/packages/devel/libcec/udev.d/50-cec.rules
 @@ -0,0 +1 @@
 +KERNEL=="CEC", MODE="0660"
 diff --git a/packages/graphics/libdrm/package.mk b/packages/graphics/libdrm/package.mk
-index f1cc2a0..4c21b68 100644
+index f1cc2a04d..4c21b68c2 100644
 --- a/packages/graphics/libdrm/package.mk
 +++ b/packages/graphics/libdrm/package.mk
 @@ -35,6 +35,7 @@ get_graphicdrivers
@@ -84,7 +84,7 @@ index f1cc2a0..4c21b68 100644
  
  PKG_CONFIGURE_OPTS_TARGET="--disable-udev \
 diff --git a/packages/graphics/mesa/package.mk b/packages/graphics/mesa/package.mk
-index f5c0153..6a95bca 100644
+index f5c015395..6a95bca8a 100644
 --- a/packages/graphics/mesa/package.mk
 +++ b/packages/graphics/mesa/package.mk
 @@ -109,7 +109,7 @@ pre_configure_target() {
@@ -97,7 +97,7 @@ index f5c0153..6a95bca 100644
      rm -rf $INSTALL/usr/lib/libGL.so.1
      ln -sf libGL.so.1 $INSTALL/usr/lib/libGL.so
 diff --git a/packages/graphics/opengl-mali/package.mk b/packages/graphics/opengl-mali/package.mk
-index 07531c3..5e46a43 100644
+index 07531c39e..5e46a438f 100644
 --- a/packages/graphics/opengl-mali/package.mk
 +++ b/packages/graphics/opengl-mali/package.mk
 @@ -17,12 +17,14 @@
@@ -170,7 +170,7 @@ index 07531c3..5e46a43 100644
  
 diff --git a/packages/graphics/opengl-mali/system.d/xorg.service b/packages/graphics/opengl-mali/system.d/xorg.service
 new file mode 100644
-index 0000000..3194170
+index 000000000..3194170f1
 --- /dev/null
 +++ b/packages/graphics/opengl-mali/system.d/xorg.service
 @@ -0,0 +1,17 @@
@@ -193,7 +193,7 @@ index 0000000..3194170
 +WantedBy=graphical.target
 diff --git a/packages/linux-firmware/samsung-firmware/package.mk b/packages/linux-firmware/samsung-firmware/package.mk
 new file mode 100644
-index 0000000..c0324e7
+index 000000000..c0324e7bf
 --- /dev/null
 +++ b/packages/linux-firmware/samsung-firmware/package.mk
 @@ -0,0 +1,45 @@
@@ -243,7 +243,7 @@ index 0000000..c0324e7
 +    done
 +}
 diff --git a/packages/linux/package.mk b/packages/linux/package.mk
-index 4f94938..98e27db 100644
+index 063cc8d09..6ea670441 100644
 --- a/packages/linux/package.mk
 +++ b/packages/linux/package.mk
 @@ -58,6 +58,11 @@ case "$LINUX" in
@@ -256,9 +256,9 @@ index 4f94938..98e27db 100644
 +    PKG_URL="https://github.com/hardkernel/linux/archive/$PKG_VERSION.tar.gz"
 +    ;;
    *)
-     PKG_VERSION="4.9.13"
+     PKG_VERSION="4.9.29"
      PKG_URL="http://www.kernel.org/pub/linux/kernel/v4.x/$PKG_NAME-$PKG_VERSION.tar.xz"
-@@ -243,6 +248,11 @@ makeinstall_init() {
+@@ -234,6 +239,11 @@ makeinstall_init() {
  }
  
  post_install() {
@@ -271,7 +271,7 @@ index 4f94938..98e27db 100644
      ln -sf /storage/.config/firmware/ $INSTALL/usr/lib/firmware/updates
  
 diff --git a/packages/mediacenter/kodi/package.mk b/packages/mediacenter/kodi/package.mk
-index 8163cb9..947cf7a 100644
+index 8b54ecafb..2d4f4c7e3 100644
 --- a/packages/mediacenter/kodi/package.mk
 +++ b/packages/mediacenter/kodi/package.mk
 @@ -198,6 +198,9 @@ if [ ! "$KODIPLAYER_DRIVER" = default ]; then
@@ -285,7 +285,7 @@ index 8163cb9..947cf7a 100644
  fi
  
 diff --git a/packages/tools/dtc/package.mk b/packages/tools/dtc/package.mk
-index 49b53a7..c50ff2c 100644
+index 0b2ddf7d2..3a46ea7d3 100644
 --- a/packages/tools/dtc/package.mk
 +++ b/packages/tools/dtc/package.mk
 @@ -35,3 +35,7 @@ makeinstall_target() {
@@ -297,7 +297,7 @@ index 49b53a7..c50ff2c 100644
 +  make install PREFIX=$ROOT/$TOOLCHAIN
 +}
 diff --git a/packages/tools/u-boot/package.mk b/packages/tools/u-boot/package.mk
-index 6f69747..1ddde00 100644
+index c67ec694f..e465c3d72 100644
 --- a/packages/tools/u-boot/package.mk
 +++ b/packages/tools/u-boot/package.mk
 @@ -18,22 +18,34 @@
@@ -305,7 +305,7 @@ index 6f69747..1ddde00 100644
  PKG_NAME="u-boot"
  PKG_DEPENDS_TARGET="toolchain"
 -if [ "$UBOOT_VERSION" = "imx6-cuboxi" ]; then
--  PKG_COMMIT="c8d1200"
+-  PKG_COMMIT="ad02f49"
 -  PKG_VERSION="imx6-$PKG_COMMIT"
 -  PKG_SITE="http://solid-run.com/wiki/doku.php?id=products:imx6:software:development:u-boot"
 -  PKG_URL="https://github.com/SolidRun/u-boot-imx6/archive/$PKG_COMMIT.tar.gz"
@@ -313,7 +313,7 @@ index 6f69747..1ddde00 100644
 -  PKG_SOURCE_DIR="$PKG_NAME-imx6-${PKG_COMMIT}*"
 +case "$UBOOT_VERSION" in
 +  "imx6-cuboxi")
-+    PKG_COMMIT="c8d1200"
++    PKG_COMMIT="ad02f49"
 +    PKG_VERSION="imx6-$PKG_COMMIT"
 +    PKG_SITE="http://solid-run.com/wiki/doku.php?id=products:imx6:software:development:u-boot"
 +    PKG_URL="https://github.com/SolidRun/u-boot-imx6/archive/$PKG_COMMIT.tar.gz"
@@ -401,7 +401,7 @@ index 6f69747..1ddde00 100644
      imx6)
        cp -PRv $PKG_DIR/scripts/update.sh $INSTALL/usr/share/bootloader
 diff --git a/packages/tools/u-boot/release b/packages/tools/u-boot/release
-index 6787a2f..b2c4782 100755
+index 6787a2f3f..b2c4782ef 100755
 --- a/packages/tools/u-boot/release
 +++ b/packages/tools/u-boot/release
 @@ -37,14 +37,28 @@ mkdir -p $RELEASE_DIR/3rdparty/bootloader
@@ -440,7 +440,7 @@ index 6787a2f..b2c4782 100755
    esac
 diff --git a/packages/tools/u-boot/scripts/update-u2.sh b/packages/tools/u-boot/scripts/update-u2.sh
 new file mode 100644
-index 0000000..42e6760
+index 000000000..42e67603c
 --- /dev/null
 +++ b/packages/tools/u-boot/scripts/update-u2.sh
 @@ -0,0 +1,73 @@
@@ -522,7 +522,7 @@ old mode 100755
 new mode 100644
 diff --git a/packages/x11/driver/xf86-video-armsoc/config/xorg-armsoc.conf b/packages/x11/driver/xf86-video-armsoc/config/xorg-armsoc.conf
 new file mode 100644
-index 0000000..e1fb459
+index 000000000..e1fb4594d
 --- /dev/null
 +++ b/packages/x11/driver/xf86-video-armsoc/config/xorg-armsoc.conf
 @@ -0,0 +1,32 @@
@@ -560,7 +560,7 @@ index 0000000..e1fb459
 +
 diff --git a/packages/x11/driver/xf86-video-armsoc/package.mk b/packages/x11/driver/xf86-video-armsoc/package.mk
 new file mode 100644
-index 0000000..efcccbf
+index 000000000..efcccbfeb
 --- /dev/null
 +++ b/packages/x11/driver/xf86-video-armsoc/package.mk
 @@ -0,0 +1,41 @@
@@ -607,7 +607,7 @@ index 0000000..efcccbf
 +}
 diff --git a/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0000-update-compat-api.h-xorg-1.19.X.patch b/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0000-update-compat-api.h-xorg-1.19.X.patch
 new file mode 100644
-index 0000000..49c601b
+index 000000000..49c601b08
 --- /dev/null
 +++ b/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0000-update-compat-api.h-xorg-1.19.X.patch
 @@ -0,0 +1,52 @@
@@ -665,7 +665,7 @@ index 0000000..49c601b
 + #endif
 diff --git a/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0001-compilation-fixes.patch b/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0001-compilation-fixes.patch
 new file mode 100644
-index 0000000..64be4be
+index 000000000..64be4be11
 --- /dev/null
 +++ b/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0001-compilation-fixes.patch
 @@ -0,0 +1,69 @@
@@ -740,7 +740,7 @@ index 0000000..64be4be
 + }
 diff --git a/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0002-fix-a-segfault-when-switching-VT.patch b/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0002-fix-a-segfault-when-switching-VT.patch
 new file mode 100644
-index 0000000..ecbaa2e
+index 000000000..ecbaa2efe
 --- /dev/null
 +++ b/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0002-fix-a-segfault-when-switching-VT.patch
 @@ -0,0 +1,24 @@
@@ -770,7 +770,7 @@ index 0000000..ecbaa2e
 + 
 diff --git a/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0003-fix-all-calloc-syntax-mistakes.patch b/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0003-fix-all-calloc-syntax-mistakes.patch
 new file mode 100644
-index 0000000..1cb6ab3
+index 000000000..1cb6ab3b8
 --- /dev/null
 +++ b/packages/x11/driver/xf86-video-armsoc/patches/xf86-video-armsoc-0003-fix-all-calloc-syntax-mistakes.patch
 @@ -0,0 +1,67 @@
@@ -843,7 +843,7 @@ index 0000000..1cb6ab3
 + 		goto free_encoders_exit;
 diff --git a/packages/x11/driver/xf86-video-armsoc/udev.d/50-mali.rules b/packages/x11/driver/xf86-video-armsoc/udev.d/50-mali.rules
 new file mode 100644
-index 0000000..d973c8c
+index 000000000..d973c8c26
 --- /dev/null
 +++ b/packages/x11/driver/xf86-video-armsoc/udev.d/50-mali.rules
 @@ -0,0 +1,3 @@
@@ -851,7 +851,7 @@ index 0000000..d973c8c
 +KERNEL=="ump", MODE="0777", GROUP="video"
 +KERNEL=="umplock", MODE="0777", GROUP="video"
 diff --git a/packages/x11/lib/libXfixes/package.mk b/packages/x11/lib/libXfixes/package.mk
-index cadfda3..e88f3ff 100644
+index cadfda351..e88f3ff49 100644
 --- a/packages/x11/lib/libXfixes/package.mk
 +++ b/packages/x11/lib/libXfixes/package.mk
 @@ -30,7 +30,11 @@ PKG_LONGDESC="X Fixes Library"
@@ -869,7 +869,7 @@ index cadfda3..e88f3ff 100644
    export CFLAGS="$CFLAGS -fPIC"
 diff --git a/projects/Odroid_U2/bootloader/boot.ini b/projects/Odroid_U2/bootloader/boot.ini
 new file mode 100644
-index 0000000..5444e7b
+index 000000000..5444e7baf
 --- /dev/null
 +++ b/projects/Odroid_U2/bootloader/boot.ini
 @@ -0,0 +1,62 @@
@@ -937,7 +937,7 @@ index 0000000..5444e7b
 +boot
 diff --git a/projects/Odroid_U2/bootloader/boot.ini.emmc b/projects/Odroid_U2/bootloader/boot.ini.emmc
 new file mode 100644
-index 0000000..6acc2f3
+index 000000000..6acc2f389
 --- /dev/null
 +++ b/projects/Odroid_U2/bootloader/boot.ini.emmc
 @@ -0,0 +1,62 @@
@@ -1005,7 +1005,7 @@ index 0000000..6acc2f3
 +boot
 diff --git a/projects/Odroid_U2/bootloader/boot.ini.sd b/projects/Odroid_U2/bootloader/boot.ini.sd
 new file mode 100644
-index 0000000..5444e7b
+index 000000000..5444e7baf
 --- /dev/null
 +++ b/projects/Odroid_U2/bootloader/boot.ini.sd
 @@ -0,0 +1,62 @@
@@ -1073,7 +1073,7 @@ index 0000000..5444e7b
 +boot
 diff --git a/projects/Odroid_U2/bootloader/u-boot-fuse b/projects/Odroid_U2/bootloader/u-boot-fuse
 new file mode 100644
-index 0000000..c899ba3
+index 000000000..c899ba311
 --- /dev/null
 +++ b/projects/Odroid_U2/bootloader/u-boot-fuse
 @@ -0,0 +1,7 @@
@@ -1086,7 +1086,7 @@ index 0000000..c899ba3
 +dd if="$RELEASE_DIR/3rdparty/bootloader/tzsw" of="$DISK" conv=fsync,notrunc bs=512 seek=2111 >"$SAVE_ERROR" 2>&1 || show_error
 diff --git a/projects/Odroid_U2/bootloader/u-boot-fuse-emmc b/projects/Odroid_U2/bootloader/u-boot-fuse-emmc
 new file mode 100644
-index 0000000..0ff53dc
+index 000000000..0ff53dc40
 --- /dev/null
 +++ b/projects/Odroid_U2/bootloader/u-boot-fuse-emmc
 @@ -0,0 +1,7 @@
@@ -1099,7 +1099,7 @@ index 0000000..0ff53dc
 +dd if="$RELEASE_DIR/3rdparty/bootloader/tzsw" of="$DISK" conv=fsync,notrunc bs=512 seek=2110 >"$SAVE_ERROR" 2>&1 || show_error
 diff --git a/projects/Odroid_U2/bootloader/u-boot-fuse-sd b/projects/Odroid_U2/bootloader/u-boot-fuse-sd
 new file mode 100644
-index 0000000..c899ba3
+index 000000000..c899ba311
 --- /dev/null
 +++ b/projects/Odroid_U2/bootloader/u-boot-fuse-sd
 @@ -0,0 +1,7 @@
@@ -1112,7 +1112,7 @@ index 0000000..c899ba3
 +dd if="$RELEASE_DIR/3rdparty/bootloader/tzsw" of="$DISK" conv=fsync,notrunc bs=512 seek=2111 >"$SAVE_ERROR" 2>&1 || show_error
 diff --git a/projects/Odroid_U2/linux/ddfddf8/linux.arm.conf b/projects/Odroid_U2/linux/ddfddf8/linux.arm.conf
 new file mode 100644
-index 0000000..1213d39
+index 000000000..1213d3946
 --- /dev/null
 +++ b/projects/Odroid_U2/linux/ddfddf8/linux.arm.conf
 @@ -0,0 +1,4231 @@
@@ -5349,7 +5349,7 @@ index 0000000..1213d39
 +# CONFIG_DDR is not set
 diff --git a/projects/Odroid_U2/options b/projects/Odroid_U2/options
 new file mode 100644
-index 0000000..9811f2b
+index 000000000..9811f2bed
 --- /dev/null
 +++ b/projects/Odroid_U2/options
 @@ -0,0 +1,159 @@
@@ -5514,7 +5514,7 @@ index 0000000..9811f2b
 +    SYSTEM_PART_START=3072
 diff --git a/projects/Odroid_U2/packages/odroid-u2-bootloader/package.mk b/projects/Odroid_U2/packages/odroid-u2-bootloader/package.mk
 new file mode 100644
-index 0000000..4fd7831
+index 000000000..4fd783146
 --- /dev/null
 +++ b/projects/Odroid_U2/packages/odroid-u2-bootloader/package.mk
 @@ -0,0 +1,44 @@
@@ -5564,7 +5564,7 @@ index 0000000..4fd7831
 +
 diff --git a/projects/Odroid_U2/patches/kodi/9999.9990_kodi_default-fixed-441khz-audio.patch b/projects/Odroid_U2/patches/kodi/9999.9990_kodi_default-fixed-441khz-audio.patch
 new file mode 100644
-index 0000000..9342ba2
+index 000000000..9342ba29f
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/kodi/9999.9990_kodi_default-fixed-441khz-audio.patch
 @@ -0,0 +1,21 @@
@@ -5591,40 +5591,43 @@ index 0000000..9342ba2
 +
 diff --git a/projects/Odroid_U2/patches/kodi/9999.9991_kodi_add-mfc-codec-full.patch b/projects/Odroid_U2/patches/kodi/9999.9991_kodi_add-mfc-codec-full.patch
 new file mode 100644
-index 0000000..bdac3fe
+index 000000000..3578bd1b3
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/kodi/9999.9991_kodi_add-mfc-codec-full.patch
-@@ -0,0 +1,2688 @@
+@@ -0,0 +1,2798 @@
++MFC support for ODROID type hardware.
 +---
-+ configure.ac                                                |   41 	40 +	1 -	0 !
-+ m4/xbmc_arch.m4                                             |    2 	1 +	1 -	0 !
-+ project/cmake/CMakeLists.txt                                |    1 	1 +	0 -	0 !
-+ project/cmake/scripts/common/ArchSetup.cmake                |    8 	8 +	0 -	0 !
-+ xbmc/cores/AudioEngine/Sinks/AESinkALSA.cpp                 |   39 	26 +	13 -	0 !
-+ xbmc/cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.cpp        |    5 	5 +	0 -	0 !
-+ xbmc/cores/VideoPlayer/DVDCodecs/Video/AMLCodec.cpp         |   29 	24 +	5 -	0 !
-+ xbmc/cores/VideoPlayer/DVDCodecs/Video/CMakeLists.txt       |    5 	5 +	0 -	0 !
-+ xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecMFC.cpp |  579 	579 +	0 -	0 !
-+ xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecMFC.h   |   63 	63 +	0 -	0 !
-+ xbmc/cores/VideoPlayer/DVDCodecs/Video/Makefile.in          |    5 	4 +	1 -	0 !
-+ xbmc/linux/CMakeLists.txt                                   |    2 	2 +	0 -	0 !
-+ xbmc/linux/LinuxV4l2Sink.cpp                                |  311 	311 +	0 -	0 !
-+ xbmc/linux/LinuxV4l2Sink.h                                  |   71 	71 +	0 -	0 !
-+ xbmc/linux/Makefile.in                                      |    1 	1 +	0 -	0 !
-+ xbmc/system_gl.h                                            |    4 	4 +	0 -	0 !
-+ xbmc/utils/AMLUtils.cpp                                     |   93 	87 +	6 -	0 !
-+ xbmc/utils/CPUInfo.cpp                                      |   25 	13 +	12 -	0 !
-+ xbmc/windowing/X11/WinSystemX11.cpp                         |    2 	1 +	1 -	0 !
-+ xbmc/windowing/egl/CMakeLists.txt                           |    6 	4 +	2 -	0 !
-+ xbmc/windowing/egl/EGLNativeTypeAmlogic.cpp                 |   93 	67 +	26 -	0 !
-+ xbmc/windowing/egl/EGLNativeTypeAmlogic.h                   |   19 	17 +	2 -	0 !
-+ xbmc/windowing/egl/EGLNativeTypeFbdev.cpp                   |  183 	183 +	0 -	0 !
-+ xbmc/windowing/egl/EGLNativeTypeFbdev.h                     |   68 	68 +	0 -	0 !
-+ xbmc/windowing/egl/EGLNativeTypeHybris.cpp                  |  279 	279 +	0 -	0 !
-+ xbmc/windowing/egl/EGLNativeTypeHybris.h                    |   77 	77 +	0 -	0 !
-+ xbmc/windowing/egl/EGLWrapper.cpp                           |   17 	12 +	5 -	0 !
-+ xbmc/windowing/egl/Makefile.in                              |    4 	4 +	0 -	0 !
-+ 28 files changed, 1957 insertions(+), 75 deletions(-)
++ configure.ac                                                    |   41 	40 +	1 -	0 !
++ m4/xbmc_arch.m4                                                 |    2 	1 +	1 -	0 !
++ project/cmake/modules/FindX.cmake                               |   13 	11 +	2 -	0 !
++ project/cmake/scripts/common/ArchSetup.cmake                    |    8 	8 +	0 -	0 !
++ xbmc/cores/AudioEngine/Sinks/AESinkALSA.cpp                     |   39 	26 +	13 -	0 !
++ xbmc/cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.cpp            |    5 	5 +	0 -	0 !
++ xbmc/cores/VideoPlayer/DVDCodecs/Video/AMLCodec.cpp             |   35 	27 +	8 -	0 !
++ xbmc/cores/VideoPlayer/DVDCodecs/Video/CMakeLists.txt           |    5 	5 +	0 -	0 !
++ xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.cpp |    2 	1 +	1 -	0 !
++ xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecMFC.cpp     |  603 	603 +	0 -	0 !
++ xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecMFC.h       |   67 	67 +	0 -	0 !
++ xbmc/cores/VideoPlayer/DVDCodecs/Video/Makefile.in              |    5 	4 +	1 -	0 !
++ xbmc/linux/CMakeLists.txt                                       |    2 	2 +	0 -	0 !
++ xbmc/linux/LinuxV4l2Sink.cpp                                    |  311 	311 +	0 -	0 !
++ xbmc/linux/LinuxV4l2Sink.h                                      |   71 	71 +	0 -	0 !
++ xbmc/linux/Makefile.in                                          |    1 	1 +	0 -	0 !
++ xbmc/system_gl.h                                                |    4 	4 +	0 -	0 !
++ xbmc/utils/AMLUtils.cpp                                         |   93 	87 +	6 -	0 !
++ xbmc/utils/CPUInfo.cpp                                          |   25 	13 +	12 -	0 !
++ xbmc/windowing/X11/GLContextEGL.cpp                             |    4 	4 +	0 -	0 !
++ xbmc/windowing/X11/WinSystemX11.cpp                             |    2 	1 +	1 -	0 !
++ xbmc/windowing/egl/CMakeLists.txt                               |    6 	4 +	2 -	0 !
++ xbmc/windowing/egl/EGLNativeTypeAmlogic.cpp                     |   93 	67 +	26 -	0 !
++ xbmc/windowing/egl/EGLNativeTypeAmlogic.h                       |   19 	17 +	2 -	0 !
++ xbmc/windowing/egl/EGLNativeTypeFbdev.cpp                       |  183 	183 +	0 -	0 !
++ xbmc/windowing/egl/EGLNativeTypeFbdev.h                         |   68 	68 +	0 -	0 !
++ xbmc/windowing/egl/EGLNativeTypeHybris.cpp                      |  279 	279 +	0 -	0 !
++ xbmc/windowing/egl/EGLNativeTypeHybris.h                        |   77 	77 +	0 -	0 !
++ xbmc/windowing/egl/EGLWrapper.cpp                               |   17 	12 +	5 -	0 !
++ xbmc/windowing/egl/Makefile.in                                  |    4 	4 +	0 -	0 !
++ 30 files changed, 2003 insertions(+), 81 deletions(-)
 +
 +--- a/configure.ac
 ++++ b/configure.ac
@@ -5710,7 +5713,7 @@ index 0000000..bdac3fe
 + ### External libraries messages
 + 
 + if test "$host_vendor" = "apple" ; then
-+@@ -2329,6 +2367,7 @@ AC_SUBST(HAVE_SSE4)
++@@ -2330,6 +2368,7 @@ AC_SUBST(HAVE_SSE4)
 + AC_SUBST(USE_MMAL)
 + AC_SUBST(USE_X11)
 + AC_SUBST(USE_OPTICAL_DRIVE)
@@ -5729,6 +5732,49 @@ index 0000000..bdac3fe
 +      AC_SUBST(NATIVE_ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
 +      ;;
 +   *)
++--- a/project/cmake/modules/FindX.cmake
+++++ b/project/cmake/modules/FindX.cmake
++@@ -16,7 +16,7 @@
++ #   X::Xext - The X11 extension library
++ 
++ if(PKG_CONFIG_FOUND)
++-  pkg_check_modules(PC_X x11 xext QUIET)
+++  pkg_check_modules(PC_X x11 xext xrandr QUIET)
++ endif()
++ 
++ find_path(X_INCLUDE_DIR NAMES X11/Xlib.h
++@@ -25,6 +25,8 @@ find_library(X_LIBRARY NAMES X11
++                        PATHS ${PC_X_x11_LIBDIR})
++ find_library(X_EXT_LIBRARY NAMES Xext
++                            PATHS ${PC_X_xext_LIBDIR})
+++find_library(X_RANDR_LIBRARY NAMES Xrandr
+++                           PATHS ${PC_X_xrandr_LIBDIR})
++ 
++ set(X_VERSION ${PC_X_x11_VERSION})
++ 
++@@ -34,7 +36,7 @@ find_package_handle_standard_args(X
++                                   VERSION_VAR X_VERSION)
++ 
++ if(X_FOUND)
++-  set(X_LIBRARIES ${X_LIBRARY} ${X_EXT_LIBRARY})
+++  set(X_LIBRARIES ${X_LIBRARY} ${X_EXT_LIBRARY} ${X_RANDR_LIBRARY})
++   set(X_INCLUDE_DIRS ${X_INCLUDE_DIR})
++   set(X_DEFINITIONS -DHAVE_X11=1)
++ 
++@@ -52,6 +54,13 @@ if(X_FOUND)
++                                   INTERFACE_INCLUDE_DIRECTORIES "${X_INCLUDE_DIR}"
++                                   INTERFACE_LINK_LIBRARIES X::X)
++   endif()
+++  if(NOT TARGET X::Xrandr)
+++    add_library(X::Xrandr UNKNOWN IMPORTED)
+++    set_target_properties(X::Xrandr PROPERTIES
+++                                  IMPORTED_LOCATION "${X_RANDR_LIBRARY}"
+++                                  INTERFACE_INCLUDE_DIRECTORIES "${X_INCLUDE_DIR}"
+++                                  INTERFACE_LINK_LIBRARIES X::X)
+++  endif()
++ endif()
++ 
++ mark_as_advanced(X_INCLUDE_DIR X_LIBRARY X_EXT_LIBRARY)
 +--- a/project/cmake/scripts/common/ArchSetup.cmake
 ++++ b/project/cmake/scripts/common/ArchSetup.cmake
 +@@ -150,6 +150,14 @@ if(NOT DEFINED NEON OR NEON)
@@ -5764,7 +5810,7 @@ index 0000000..bdac3fe
 + }
 + 
 + bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
-+@@ -743,16 +745,16 @@ bool CAESinkALSA::InitializeHW(const ALS
++@@ -748,16 +750,16 @@ bool CAESinkALSA::InitializeHW(const ALS
 +   snd_pcm_hw_params_get_buffer_size_max(hw_params, &bufferSize);
 +   snd_pcm_hw_params_get_period_size_max(hw_params, &periodSize, NULL);
 + 
@@ -5785,7 +5831,7 @@ index 0000000..bdac3fe
 +    According to upstream we should set buffer size first - so make sure it is always at least
 +    4x period size to not get underruns (some systems seem to have issues with only 2 periods)
 +   */
-+@@ -771,7 +773,7 @@ bool CAESinkALSA::InitializeHW(const ALS
++@@ -776,7 +778,7 @@ bool CAESinkALSA::InitializeHW(const ALS
 +     snd_pcm_hw_params_copy(hw_params_copy, hw_params); // restore working copy
 +     CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Request: Failed to limit periodSize to %lu", periodSizeMax);
 +   }
@@ -5794,7 +5840,7 @@ index 0000000..bdac3fe
 +   // first trying bufferSize, PeriodSize
 +   // for more info see here:
 +   // http://mailman.alsa-project.org/pipermail/alsa-devel/2009-September/021069.html
-+@@ -781,22 +783,24 @@ bool CAESinkALSA::InitializeHW(const ALS
++@@ -786,22 +788,24 @@ bool CAESinkALSA::InitializeHW(const ALS
 +   snd_pcm_uframes_t periodSizeTemp, bufferSizeTemp;
 +   periodSizeTemp = periodSize;
 +   bufferSizeTemp = bufferSize;
@@ -5823,7 +5869,7 @@ index 0000000..bdac3fe
 +         || snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
 +       {
 +         // try only BufferSize
-+@@ -818,7 +822,7 @@ bool CAESinkALSA::InitializeHW(const ALS
++@@ -823,7 +827,7 @@ bool CAESinkALSA::InitializeHW(const ALS
 +       snd_pcm_get_params(m_pcm, &bufferSize, &periodSize);
 +     }
 +   }
@@ -5832,7 +5878,7 @@ index 0000000..bdac3fe
 +   CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Got: periodSize %lu, bufferSize %lu", periodSize, bufferSize);
 + 
 +   /* set the format parameters */
-+@@ -1300,6 +1304,15 @@ void CAESinkALSA::EnumerateDevicesEx(AED
++@@ -1305,6 +1309,15 @@ void CAESinkALSA::EnumerateDevicesEx(AED
 + 
 + AEDeviceType CAESinkALSA::AEDeviceTypeFromName(const std::string &name)
 + {
@@ -5848,7 +5894,7 @@ index 0000000..bdac3fe
 +   if (name.substr(0, 4) == "hdmi")
 +     return AE_DEVTYPE_HDMI;
 +   else if (name.substr(0, 6) == "iec958" || name.substr(0, 5) == "spdif")
-+@@ -1404,9 +1417,9 @@ void CAESinkALSA::EnumerateDevice(AEDevi
++@@ -1409,9 +1422,9 @@ void CAESinkALSA::EnumerateDevice(AEDevi
 + 
 +             if (badHDMI)
 +             {
@@ -5884,7 +5930,7 @@ index 0000000..bdac3fe
 +       return pCodec;
 +--- a/xbmc/cores/VideoPlayer/DVDCodecs/Video/AMLCodec.cpp
 ++++ b/xbmc/cores/VideoPlayer/DVDCodecs/Video/AMLCodec.cpp
-+@@ -427,7 +427,25 @@ void dumpfile_write(am_private_t *para,
++@@ -398,7 +398,25 @@ void dumpfile_write(am_private_t *para,
 +   }
 + 
 +   if (para->dumpdemux && para->dumpfile != -1)
@@ -5911,7 +5957,16 @@ index 0000000..bdac3fe
 + }
 + 
 + static vformat_t codecid_to_vformat(enum AVCodecID id)
-+@@ -1582,7 +1600,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamIn
++@@ -713,7 +731,7 @@ int write_av_packet(am_private_t *para,
++         }
++         pkt->newflag = 0;
++     }
++-	
+++
++     buf = pkt->data;
++     size = pkt->data_size ;
++     if (size == 0 && pkt->isvalid) {
++@@ -1564,7 +1582,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamIn
 +       // h264 in an avi file
 +       if (m_hints.ptsinvalid)
 +         am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
@@ -5920,16 +5975,28 @@ index 0000000..bdac3fe
 +     case VFORMAT_REAL:
 +       am_private->stream_type = AM_STREAM_RM;
 +       am_private->vcodec.noblock = 1;
-+@@ -1646,7 +1664,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamIn
-+   am_private->am_pkt.codec = &am_private->vcodec;
-+   pre_header_feeding(am_private, &am_private->am_pkt);
++@@ -1629,7 +1647,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamIn
++ 
++   Create();
 + 
 +-  m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iHeight);
 ++  m_display_rect = CRect(0, 0, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenWidth, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight);
 + 
 +   std::string strScaler;
 +   SysfsUtils::GetString("/sys/class/ppmgr/ppscaler", strScaler);
-+@@ -2200,7 +2218,6 @@ void CAMLCodec::SetVideoRect(const CRect
++@@ -1852,9 +1870,9 @@ int CAMLCodec::Decode(uint8_t *pData, si
++ 
++   // if we have still frames, demux size will be small
++   // and we need to pre-buffer more.
++-  double target_timesize = 1.0;
+++  double target_timesize = 1.5;
++   if (iSize < 20)
++-    target_timesize = 2.0;
+++    target_timesize += 1.0;
++ 
++   int rtn = 0;
++ 
++@@ -2165,7 +2183,6 @@ void CAMLCodec::SetVideoRect(const CRect
 +         int diff = (int) ((dst_rect.Height() - dst_rect.Width()) / 2);
 +         dst_rect = CRect(DestRect.x1 - diff, DestRect.y1, DestRect.x2 + diff, DestRect.y2);
 +       }
@@ -5937,7 +6004,7 @@ index 0000000..bdac3fe
 +   }
 + 
 +   if (m_dst_rect != dst_rect)
-+@@ -2222,7 +2239,7 @@ void CAMLCodec::SetVideoRect(const CRect
++@@ -2187,7 +2204,7 @@ void CAMLCodec::SetVideoRect(const CRect
 + #ifdef TARGET_ANDROID
 +   display = m_display_rect;
 + #else
@@ -5946,7 +6013,7 @@ index 0000000..bdac3fe
 + #endif
 +   if (gui != display)
 +   {
-+@@ -2294,6 +2311,8 @@ void CAMLCodec::SetVideoRect(const CRect
++@@ -2287,6 +2304,8 @@ void CAMLCodec::SetVideoRect(const CRect
 +   std::string s_gui = StringUtils::Format("%i,%i,%i,%i",
 +     (int)gui.x1, (int)gui.y1,
 +     (int)gui.Width(), (int)gui.Height());
@@ -5969,9 +6036,20 @@ index 0000000..bdac3fe
 + if(OPENMAX_FOUND)
 +   list(APPEND SOURCES DVDVideoCodecOpenMax.cpp
 +                       OpenMax.cpp
++--- a/xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.cpp
+++++ b/xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.cpp
++@@ -123,7 +123,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStr
++       // under streamers can have issues when seeking.
++       if (m_hints.extradata && *(uint8_t*)m_hints.extradata == 1)
++       {
++-        m_bitstream = new CBitstreamConverter;
+++        m_bitstream = new CBitstreamConverter();
++         m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true);
++         // make sure we do not leak the existing m_hints.extradata
++         free(m_hints.extradata);
 +--- /dev/null
 ++++ b/xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecMFC.cpp
-+@@ -0,0 +1,579 @@
++@@ -0,0 +1,603 @@
 ++#include "system.h"
 ++
 ++#ifndef THIS_IS_NOT_XBMC
@@ -6018,6 +6096,9 @@ index 0000000..bdac3fe
 ++  m_Buffer = NULL;
 ++  m_BufferNowOnScreen = NULL;
 ++
+++  m_droppedFrames = 0;
+++  m_codecPts = DVD_NOPTS_VALUE;
+++
 ++  memzero(m_videoBuffer);
 ++
 ++}
@@ -6041,7 +6122,7 @@ index 0000000..bdac3fe
 ++        char sysname[64];
 ++        char drivername[32];
 ++        char target[1024];
-++        int ret;
+++        ssize_t ret;
 ++
 ++        snprintf(sysname, 64, "/sys/class/video4linux/%s", ent->d_name);
 ++        snprintf(name, 64, "/sys/class/video4linux/%s/name", ent->d_name);
@@ -6166,8 +6247,8 @@ index 0000000..bdac3fe
 ++  struct V4l2SinkBuffer sinkBuffer;
 ++  V4l2Device *finalSink = NULL;
 ++  int finalFormat = -1;
-++  int resultVideoWidth;
-++  int resultVideoHeight;
+++  unsigned int resultVideoWidth;
+++  unsigned int resultVideoHeight;
 ++  int resultLineSize;
 ++  unsigned int extraSize = 0;
 ++  uint8_t *extraData = NULL;
@@ -6183,6 +6264,8 @@ index 0000000..bdac3fe
 ++  m_BufferNowOnScreen->iIndex = -1;
 ++  m_bVideoConvert = false;
 ++  m_bDropPictures = false;
+++  m_droppedFrames = 0;
+++  m_codecPts = DVD_NOPTS_VALUE;
 ++  memzero(m_videoBuffer);
 ++
 ++  if (!OpenDevices()) {
@@ -6259,7 +6342,6 @@ index 0000000..bdac3fe
 ++      break;
 ++    default:
 ++      return false;
-++      break;
 ++  }
 ++  fmt.fmt.pix_mp.plane_fmt[0].sizeimage = BUFFER_SIZE;
 ++  // Set encoded format
@@ -6410,6 +6492,11 @@ index 0000000..bdac3fe
 ++  m_BufferNowOnScreen->iIndex = -1;
 ++  m_bCodecHealthy = true;
 ++
+++  m_processInfo.SetVideoDecoderName(m_name, true);
+++  m_processInfo.SetVideoDimensions(resultVideoWidth, resultVideoHeight);
+++  m_processInfo.SetVideoDeintMethod("hardware");
+++  m_processInfo.SetVideoPixelFormat("YUV 4:2:0");
+++
 ++  CLog::Log(LOGNOTICE, "%s::%s - MFC Setup succesfull (%dx%d, linesize %d, format 0x%x), start streaming", CLASSNAME, __func__, resultVideoWidth, resultVideoHeight, resultLineSize, finalFormat);
 ++
 ++  return true;
@@ -6437,7 +6524,7 @@ index 0000000..bdac3fe
 ++
 ++  if(pData) {
 ++    int demuxer_bytes = iSize;
-++    uint8_t *demuxer_content = pData;
+++    BYTE *demuxer_content = pData;
 ++
 ++    if(m_bVideoConvert) {
 ++      m_converter.Convert(demuxer_content, demuxer_bytes);
@@ -6480,6 +6567,9 @@ index 0000000..bdac3fe
 ++
 ++    if (m_bDropPictures) {
 ++      CLog::Log(LOGWARNING, "%s::%s - Dropping frame with index %d", CLASSNAME, __func__, m_Buffer->iIndex);
+++      long longPts[2] = { m_Buffer->timeStamp.tv_sec, m_Buffer->timeStamp.tv_usec };
+++      m_codecPts = *((double*)&longPts[0]);
+++      m_droppedFrames++;
 ++      // Queue it back to MFC CAPTURE since we are in an underrun condition
 ++      m_MFCCapture->PushBuffer(m_Buffer);
 ++      return (VC_DROPPED | VC_BUFFER);
@@ -6512,7 +6602,7 @@ index 0000000..bdac3fe
 ++  m_videoBuffer.data[0]         = (BYTE*)m_Buffer->cPlane[0];
 ++  m_videoBuffer.data[1]         = (BYTE*)m_Buffer->cPlane[1];
 ++  m_videoBuffer.data[2]         = (BYTE*)m_Buffer->cPlane[2];
-++  m_videoBuffer.pts             = *((double*)&longPts[0]);
+++  m_videoBuffer.pts             = m_codecPts = *((double*)&longPts[0]);
 ++
 ++  std::swap(m_Buffer, m_BufferNowOnScreen);
 ++
@@ -6525,7 +6615,19 @@ index 0000000..bdac3fe
 ++
 ++}
 ++
+++bool CDVDVideoCodecMFC::GetCodecStats(double &pts, int &droppedFrames, int &skippedPics) {
+++  pts = m_codecPts;
+++  droppedFrames = m_droppedFrames;
+++  skippedPics = 0;
+++  m_droppedFrames = 0;
+++
+++  return true;
+++}
+++
 ++void CDVDVideoCodecMFC::Reset() {
+++
+++  m_droppedFrames = 0;
+++  m_codecPts = DVD_NOPTS_VALUE;
 ++
 ++  if (m_bCodecHealthy) {
 ++    CLog::Log(LOGDEBUG, "%s::%s - Codec Reset requested, but codec is healthy, doing soft-flush", CLASSNAME, __func__);
@@ -6553,7 +6655,7 @@ index 0000000..bdac3fe
 ++}
 +--- /dev/null
 ++++ b/xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecMFC.h
-+@@ -0,0 +1,63 @@
++@@ -0,0 +1,67 @@
 ++#pragma once
 ++
 ++#ifndef THIS_IS_NOT_XBMC
@@ -6590,6 +6692,7 @@ index 0000000..bdac3fe
 ++  virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
 ++  virtual void SetDropState(bool bDrop);
 ++  virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
+++  virtual bool GetCodecStats(double &pts, int &droppedFrames, int &skippedPics) override;
 ++
 ++protected:
 ++  std::string m_name;
@@ -6614,6 +6717,9 @@ index 0000000..bdac3fe
 ++  bool m_bDropPictures;
 ++
 ++  DVDVideoPicture   m_videoBuffer;
+++
+++  int m_droppedFrames;
+++  double m_codecPts;
 ++
 ++  bool OpenDevices();
 ++};
@@ -7091,7 +7197,7 @@ index 0000000..bdac3fe
 +     valstr[strlen(valstr)] = '\0';
 +     close(fd);
 + 
-+@@ -390,6 +391,60 @@ bool aml_mode_to_resolution(const char *
++@@ -435,6 +436,60 @@ bool aml_mode_to_resolution(const char *
 +     res->fRefreshRate = 50;
 +     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
 +   }
@@ -7152,7 +7258,7 @@ index 0000000..bdac3fe
 +   else if (StringUtils::EqualsNoCase(fromMode, "720p") || StringUtils::EqualsNoCase(fromMode, "720p60hz"))
 +   {
 +     res->iWidth = 1280;
-+@@ -435,6 +490,24 @@ bool aml_mode_to_resolution(const char *
++@@ -480,6 +535,24 @@ bool aml_mode_to_resolution(const char *
 +     res->fRefreshRate = 24;
 +     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
 +   }
@@ -7177,7 +7283,7 @@ index 0000000..bdac3fe
 +   else if (StringUtils::EqualsNoCase(fromMode, "1080p30hz"))
 +   {
 +     res->iWidth = 1920;
-+@@ -543,7 +616,7 @@ bool aml_mode_to_resolution(const char *
++@@ -588,7 +661,7 @@ bool aml_mode_to_resolution(const char *
 +     res->fRefreshRate = 30;
 +     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
 +   }
@@ -7186,7 +7292,7 @@ index 0000000..bdac3fe
 +   {
 +     res->iWidth = 1920;
 +     res->iHeight= 1080;
-+@@ -552,7 +625,16 @@ bool aml_mode_to_resolution(const char *
++@@ -597,7 +670,16 @@ bool aml_mode_to_resolution(const char *
 +     res->fRefreshRate = 50;
 +     res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
 +   }
@@ -7204,7 +7310,7 @@ index 0000000..bdac3fe
 +   {
 +     res->iWidth = 1920;
 +     res->iHeight= 1080;
-+@@ -577,4 +659,3 @@ bool aml_mode_to_resolution(const char *
++@@ -622,4 +704,3 @@ bool aml_mode_to_resolution(const char *
 + 
 +   return res->iWidth > 0 && res->iHeight> 0;
 + }
@@ -7306,6 +7412,19 @@ index 0000000..bdac3fe
 +         // win32 has some problems with calculation of load if load close to zero
 +         curCore.m_fPct = (load < 0) ? 0 : load;
 +         if (load >= 0 || deltaTotal > 5 * 10 * 1000 * 1000) // do not update (smooth) values for 5 seconds on negative loads
++--- a/xbmc/windowing/X11/GLContextEGL.cpp
+++++ b/xbmc/windowing/X11/GLContextEGL.cpp
++@@ -30,6 +30,10 @@
++   #include <GL/glu.h>
++   #include <GL/glext.h>
++ #elif HAS_GLES == 2
+++  // always define GL_GLEXT_PROTOTYPES before include gl headers
+++  #if !defined(GL_GLEXT_PROTOTYPES)
+++    #define GL_GLEXT_PROTOTYPES
+++  #endif
++   #include <GLES2/gl2.h>
++   #include <GLES2/gl2ext.h>
++ #endif
 +--- a/xbmc/windowing/X11/WinSystemX11.cpp
 ++++ b/xbmc/windowing/X11/WinSystemX11.cpp
 +@@ -203,7 +203,7 @@ bool CWinSystemX11::SetFullScreen(bool f
@@ -7335,7 +7454,7 @@ index 0000000..bdac3fe
 + if(OPENGLES_FOUND)
 +--- a/xbmc/windowing/egl/EGLNativeTypeAmlogic.cpp
 ++++ b/xbmc/windowing/egl/EGLNativeTypeAmlogic.cpp
-+@@ -23,13 +23,18 @@
++@@ -24,13 +24,18 @@
 + #include "utils/AMLUtils.h"
 + #include "utils/StringUtils.h"
 + #include "utils/SysfsUtils.h"
@@ -7355,7 +7474,7 @@ index 0000000..bdac3fe
 + CEGLNativeTypeAmlogic::CEGLNativeTypeAmlogic()
 + {
 +   const char *env_framebuffer = getenv("FRAMEBUFFER");
-+@@ -63,28 +68,37 @@ bool CEGLNativeTypeAmlogic::CheckCompati
++@@ -64,28 +69,37 @@ bool CEGLNativeTypeAmlogic::CheckCompati
 + void CEGLNativeTypeAmlogic::Initialize()
 + {
 +   aml_permissions();
@@ -7396,7 +7515,7 @@ index 0000000..bdac3fe
 +   m_nativeWindow = nativeWindow;
 + 
 +   SetFramebufferResolution(nativeWindow->width, nativeWindow->height);
-+@@ -97,6 +111,8 @@ bool CEGLNativeTypeAmlogic::CreateNative
++@@ -98,6 +112,8 @@ bool CEGLNativeTypeAmlogic::CreateNative
 + 
 + bool CEGLNativeTypeAmlogic::GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const
 + {
@@ -7405,7 +7524,7 @@ index 0000000..bdac3fe
 +   if (!nativeDisplay)
 +     return false;
 +   *nativeDisplay = (XBNativeDisplayType*) &m_nativeDisplay;
-+@@ -105,6 +121,8 @@ bool CEGLNativeTypeAmlogic::GetNativeDis
++@@ -106,6 +122,8 @@ bool CEGLNativeTypeAmlogic::GetNativeDis
 + 
 + bool CEGLNativeTypeAmlogic::GetNativeWindow(XBNativeWindowType **nativeWindow) const
 + {
@@ -7414,7 +7533,7 @@ index 0000000..bdac3fe
 +   if (!nativeWindow)
 +     return false;
 +   *nativeWindow = (XBNativeWindowType*) &m_nativeWindow;
-+@@ -113,11 +131,15 @@ bool CEGLNativeTypeAmlogic::GetNativeWin
++@@ -114,11 +132,15 @@ bool CEGLNativeTypeAmlogic::GetNativeWin
 + 
 + bool CEGLNativeTypeAmlogic::DestroyNativeDisplay()
 + {
@@ -7430,16 +7549,17 @@ index 0000000..bdac3fe
 + #if defined(_FBDEV_WINDOW_H_)
 +   delete (fbdev_window*)m_nativeWindow, m_nativeWindow = NULL;
 + #endif
-+@@ -133,6 +155,8 @@ bool CEGLNativeTypeAmlogic::GetNativeRes
++@@ -134,7 +156,9 @@ bool CEGLNativeTypeAmlogic::GetNativeRes
 + 
 + bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
 + {
 ++  CLog::Log(LOGNOTICE, "%s::%s to %dx%d@%f", CLASSNAME, __func__, res.iScreenWidth, res.iScreenHeight, res.fRefreshRate);
++   bool result = false;
 ++
 + #if defined(_FBDEV_WINDOW_H_)
 +   if (m_nativeWindow)
 +   {
-+@@ -152,6 +176,8 @@ bool CEGLNativeTypeAmlogic::SetNativeRes
++@@ -158,6 +182,8 @@ bool CEGLNativeTypeAmlogic::SetNativeRes
 + 
 + bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 + {
@@ -7448,7 +7568,7 @@ index 0000000..bdac3fe
 +   std::string valstr;
 +   SysfsUtils::GetString("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr);
 +   std::vector<std::string> probe_str = StringUtils::Split(valstr, "\n");
-+@@ -164,11 +190,12 @@ bool CEGLNativeTypeAmlogic::ProbeResolut
++@@ -170,11 +196,12 @@ bool CEGLNativeTypeAmlogic::ProbeResolut
 +       resolutions.push_back(res);
 +   }
 +   return resolutions.size() > 0;
@@ -7462,7 +7582,7 @@ index 0000000..bdac3fe
 +   // check display/mode, it gets defaulted at boot
 +   if (!GetNativeResolution(res))
 +   {
-+@@ -181,6 +208,8 @@ bool CEGLNativeTypeAmlogic::GetPreferred
++@@ -187,6 +214,8 @@ bool CEGLNativeTypeAmlogic::GetPreferred
 + 
 + bool CEGLNativeTypeAmlogic::ShowWindow(bool show)
 + {
@@ -7471,7 +7591,7 @@ index 0000000..bdac3fe
 +   std::string blank_framebuffer = "/sys/class/graphics/" + m_framebuffer_name + "/blank";
 +   SysfsUtils::SetInt(blank_framebuffer.c_str(), show ? 0 : 1);
 +   return true;
-+@@ -188,6 +217,8 @@ bool CEGLNativeTypeAmlogic::ShowWindow(b
++@@ -194,6 +223,8 @@ bool CEGLNativeTypeAmlogic::ShowWindow(b
 + 
 + bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
 + {
@@ -7480,7 +7600,7 @@ index 0000000..bdac3fe
 +   std::string mode = resolution;
 +   // switch display resolution
 +   SysfsUtils::SetString("/sys/class/display/mode", mode.c_str());
-+@@ -195,36 +226,46 @@ bool CEGLNativeTypeAmlogic::SetDisplayRe
++@@ -201,36 +232,46 @@ bool CEGLNativeTypeAmlogic::SetDisplayRe
 +   RESOLUTION_INFO res;
 +   aml_mode_to_resolution(mode.c_str(), &res);
 +   SetFramebufferResolution(res);
@@ -7546,7 +7666,7 @@ index 0000000..bdac3fe
 + }
 + 
 + void CEGLNativeTypeAmlogic::SetFramebufferResolution(const RESOLUTION_INFO &res) const
-+@@ -244,8 +285,8 @@ void CEGLNativeTypeAmlogic::SetFramebuff
++@@ -250,8 +291,8 @@ void CEGLNativeTypeAmlogic::SetFramebuff
 +     {
 +       vinfo.xres = width;
 +       vinfo.yres = height;
@@ -8273,19 +8393,9 @@ index 0000000..bdac3fe
 + SRCS+= EGLWrapper.cpp
 + 
 + LIB = windowing_egl.a
-+--- a/project/cmake/CMakeLists.txt
-++++ b/project/cmake/CMakeLists.txt
-+@@ -203,6 +203,7 @@ if(NOT WIN32)
-+     if(OPENGLES_FOUND)
-+       core_optional_dep(X ENABLE_X11)
-+       core_optional_dep(LibDRM ENABLE_X11)
-++      core_optional_dep(XRandR ENABLE_X11)
-+     endif()
-+   endif()
-+   if(NOT APPLE)
 diff --git a/projects/Odroid_U2/patches/libcec/0001_libcec_add-exynos-cec-variable.patch b/projects/Odroid_U2/patches/libcec/0001_libcec_add-exynos-cec-variable.patch
 new file mode 100644
-index 0000000..4c453b7
+index 000000000..4c453b757
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/libcec/0001_libcec_add-exynos-cec-variable.patch
 @@ -0,0 +1,30 @@
@@ -8321,7 +8431,7 @@ index 0000000..4c453b7
 + 
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-002-compiler-gcc.h.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-002-compiler-gcc.h.patch
 new file mode 100644
-index 0000000..46b4c8e
+index 000000000..46b4c8e92
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-002-compiler-gcc.h.patch
 @@ -0,0 +1,327 @@
@@ -8654,7 +8764,7 @@ index 0000000..46b4c8e
 +-#endif /* CONFIG_ARCH_USE_BUILTIN_BSWAP */
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-003-no_dev_console.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-003-no_dev_console.patch
 new file mode 100644
-index 0000000..0ef8d8c
+index 000000000..0ef8d8cf0
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-003-no_dev_console.patch
 @@ -0,0 +1,19 @@
@@ -8679,7 +8789,7 @@ index 0000000..0ef8d8c
 + 	/*
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-006_enable_utf8.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-006_enable_utf8.patch
 new file mode 100644
-index 0000000..bee1cf3
+index 000000000..bee1cf3da
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-006_enable_utf8.patch
 @@ -0,0 +1,25 @@
@@ -8710,7 +8820,7 @@ index 0000000..bee1cf3
 + 	popt->sbsector=-1;
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-010-perf_crosscompiling.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-010-perf_crosscompiling.patch
 new file mode 100644
-index 0000000..25601fc
+index 000000000..25601fcac
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-010-perf_crosscompiling.patch
 @@ -0,0 +1,14 @@
@@ -8730,7 +8840,7 @@ index 0000000..25601fc
 +
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-055-add_Formosa_eHome_Infrared_Receiver.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-055-add_Formosa_eHome_Infrared_Receiver.patch
 new file mode 100644
-index 0000000..e2afb63
+index 000000000..e2afb63e3
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-055-add_Formosa_eHome_Infrared_Receiver.patch
 @@ -0,0 +1,11 @@
@@ -8747,7 +8857,7 @@ index 0000000..e2afb63
 + 	  .driver_info = MCE_GEN2_NO_TX },
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-056-add_Adaptec_eHome_Infrared_Receiver.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-056-add_Adaptec_eHome_Infrared_Receiver.patch
 new file mode 100644
-index 0000000..461a82e
+index 000000000..461a82e4d
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-056-add_Adaptec_eHome_Infrared_Receiver.patch
 @@ -0,0 +1,20 @@
@@ -8773,7 +8883,7 @@ index 0000000..461a82e
 + };
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-Removed-MCE-customer-code-restriction-in-rc6-decode.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-Removed-MCE-customer-code-restriction-in-rc6-decode.patch
 new file mode 100644
-index 0000000..9f84e66
+index 000000000..9f84e6659
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-Removed-MCE-customer-code-restriction-in-rc6-decode.patch
 @@ -0,0 +1,22 @@
@@ -8801,7 +8911,7 @@ index 0000000..9f84e66
 + 			} else {
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-add_SMK_Manufacturing_Inc_Infrared_Receiver.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-add_SMK_Manufacturing_Inc_Infrared_Receiver.patch
 new file mode 100644
-index 0000000..67fc7a0
+index 000000000..67fc7a0de
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-057-add_SMK_Manufacturing_Inc_Infrared_Receiver.patch
 @@ -0,0 +1,13 @@
@@ -8820,7 +8930,7 @@ index 0000000..67fc7a0
 + 	/* Shuttle eHome Infrared Transceiver */
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.01-HID-Sony-upstream_patches.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.01-HID-Sony-upstream_patches.patch
 new file mode 100644
-index 0000000..82f2f33
+index 000000000..82f2f3381
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.01-HID-Sony-upstream_patches.patch
 @@ -0,0 +1,615 @@
@@ -9441,7 +9551,7 @@ index 0000000..82f2f33
 + 
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch
 new file mode 100644
-index 0000000..abdc74f
+index 000000000..abdc74f67
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.05-hid_sony-add_autorepeat_for_PS3_remotes.patch
 @@ -0,0 +1,61 @@
@@ -9508,7 +9618,7 @@ index 0000000..abdc74f
 +
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.06-hid_sony-add_SMK_link.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.06-hid_sony-add_SMK_link.patch
 new file mode 100644
-index 0000000..bc92ecf
+index 000000000..bc92ecf48
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-058.06-hid_sony-add_SMK_link.patch
 @@ -0,0 +1,47 @@
@@ -9561,7 +9671,7 @@ index 0000000..bc92ecf
 + static struct hid_driver sony_driver = {
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-059-remove_some_xpad_pids-0.2.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-059-remove_some_xpad_pids-0.2.patch
 new file mode 100644
-index 0000000..4a6d1c7
+index 000000000..4a6d1c7a0
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-059-remove_some_xpad_pids-0.2.patch
 @@ -0,0 +1,11 @@
@@ -9578,7 +9688,7 @@ index 0000000..4a6d1c7
 + 
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-060-add_AUGUST_DVB-T205.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-060-add_AUGUST_DVB-T205.patch
 new file mode 100644
-index 0000000..2f003dd
+index 000000000..2f003ddaa
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-060-add_AUGUST_DVB-T205.patch
 @@ -0,0 +1,15 @@
@@ -9599,7 +9709,7 @@ index 0000000..2f003dd
 +
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-061-valve-xpad-rework.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-061-valve-xpad-rework.patch
 new file mode 100644
-index 0000000..c485a63
+index 000000000..c485a63e4
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-061-valve-xpad-rework.patch
 @@ -0,0 +1,462 @@
@@ -10067,7 +10177,7 @@ index 0000000..c485a63
 + 	if (xpad->xtype == XTYPE_XBOX360W) {
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-203-stb0899_enable_low_symbol_rate.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-203-stb0899_enable_low_symbol_rate.patch
 new file mode 100644
-index 0000000..f302b6c
+index 000000000..f302b6ce1
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-203-stb0899_enable_low_symbol_rate.patch
 @@ -0,0 +1,12 @@
@@ -10085,7 +10195,7 @@ index 0000000..f302b6c
 + 		.caps 			= FE_CAN_INVERSION_AUTO	|
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-212-mantis_stb0899_faster_lock.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-212-mantis_stb0899_faster_lock.patch
 new file mode 100644
-index 0000000..eef4e1e
+index 000000000..eef4e1eff
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-212-mantis_stb0899_faster_lock.patch
 @@ -0,0 +1,138 @@
@@ -10229,7 +10339,7 @@ index 0000000..eef4e1e
 + 
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-221-ngene-octopus.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-221-ngene-octopus.patch
 new file mode 100644
-index 0000000..2028503
+index 000000000..202850315
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-221-ngene-octopus.patch
 @@ -0,0 +1,12552 @@
@@ -22787,7 +22897,7 @@ index 0000000..2028503
 +-Patches should be submitted to: linux-media@vger.kernel.org.
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-222-stb0899_signal_quality.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-222-stb0899_signal_quality.patch
 new file mode 100644
-index 0000000..fd6539d
+index 000000000..fd6539d2b
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-222-stb0899_signal_quality.patch
 @@ -0,0 +1,62 @@
@@ -22855,7 +22965,7 @@ index 0000000..fd6539d
 + 		}
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-223-Fix-video-artifacts-with-tt-3600-s2-usb.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-223-Fix-video-artifacts-with-tt-3600-s2-usb.patch
 new file mode 100644
-index 0000000..7aaabc4
+index 000000000..7aaabc48c
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-223-Fix-video-artifacts-with-tt-3600-s2-usb.patch
 @@ -0,0 +1,17 @@
@@ -22878,7 +22988,7 @@ index 0000000..7aaabc4
 +					}
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-701-linksys_aes2500_brcmfmac.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-701-linksys_aes2500_brcmfmac.patch
 new file mode 100644
-index 0000000..639a6ab
+index 000000000..639a6ab30
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-701-linksys_aes2500_brcmfmac.patch
 @@ -0,0 +1,21 @@
@@ -22905,7 +23015,7 @@ index 0000000..639a6ab
 + 	{ }
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-702-Support-for-cheap-Ralink-3070-WiFi-plug.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-702-Support-for-cheap-Ralink-3070-WiFi-plug.patch
 new file mode 100644
-index 0000000..e3dc6ca
+index 000000000..e3dc6ca99
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-702-Support-for-cheap-Ralink-3070-WiFi-plug.patch
 @@ -0,0 +1,64 @@
@@ -22975,7 +23085,7 @@ index 0000000..e3dc6ca
 + 	case RF5392:
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-704-Support-for-Ubiquiti-WifiStation.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-704-Support-for-Ubiquiti-WifiStation.patch
 new file mode 100644
-index 0000000..7932c07
+index 000000000..7932c0723
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-704-Support-for-Ubiquiti-WifiStation.patch
 @@ -0,0 +1,28 @@
@@ -23009,7 +23119,7 @@ index 0000000..7932c07
 +
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-705-Support-for-Buffalo-WLI-UC-G300HP-V1.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-705-Support-for-Buffalo-WLI-UC-G300HP-V1.patch
 new file mode 100644
-index 0000000..816af3b
+index 000000000..816af3b9d
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-705-Support-for-Buffalo-WLI-UC-G300HP-V1.patch
 @@ -0,0 +1,10 @@
@@ -23025,7 +23135,7 @@ index 0000000..816af3b
 + 	{ USB_DEVICE(0x07aa, 0x002f) },
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-706-Sitecom-N300.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-706-Sitecom-N300.patch
 new file mode 100644
-index 0000000..9f52eeb
+index 000000000..9f52eeb2d
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-706-Sitecom-N300.patch
 @@ -0,0 +1,11 @@
@@ -23042,7 +23152,7 @@ index 0000000..9f52eeb
 + 	/* Thinkware */
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-900-KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-900-KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
 new file mode 100644
-index 0000000..b211efc
+index 000000000..b211efce5
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-900-KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
 @@ -0,0 +1,81 @@
@@ -23129,7 +23239,7 @@ index 0000000..b211efc
 +
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-901-mm-remove-gup_flags-FOLL_WRITE-games-from-__get_user.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-901-mm-remove-gup_flags-FOLL_WRITE-games-from-__get_user.patch
 new file mode 100644
-index 0000000..c7a0dfe
+index 000000000..c7a0dfe29
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-901-mm-remove-gup_flags-FOLL_WRITE-games-from-__get_user.patch
 @@ -0,0 +1,101 @@
@@ -23236,7 +23346,7 @@ index 0000000..c7a0dfe
 +
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-902-Revert-media-mfc-use-shipped-firmware-paths.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-902-Revert-media-mfc-use-shipped-firmware-paths.patch
 new file mode 100644
-index 0000000..da1d417
+index 000000000..da1d417fa
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-902-Revert-media-mfc-use-shipped-firmware-paths.patch
 @@ -0,0 +1,35 @@
@@ -23277,7 +23387,7 @@ index 0000000..da1d417
 +
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-903-Allow-mac-address-to-be-set-in-smsc95xx.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-903-Allow-mac-address-to-be-set-in-smsc95xx.patch
 new file mode 100644
-index 0000000..f1b29a0
+index 000000000..f1b29a0d0
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-903-Allow-mac-address-to-be-set-in-smsc95xx.patch
 @@ -0,0 +1,96 @@
@@ -23379,7 +23489,7 @@ index 0000000..f1b29a0
 +
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-991-update-magic_h-header.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-991-update-magic_h-header.patch
 new file mode 100644
-index 0000000..aa534ca
+index 000000000..aa534ca47
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-991-update-magic_h-header.patch
 @@ -0,0 +1,28 @@
@@ -23413,7 +23523,7 @@ index 0000000..aa534ca
 + #endif /* __LINUX_MAGIC_H__ */
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-992-add-sctp-headers.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-992-add-sctp-headers.patch
 new file mode 100644
-index 0000000..b2f2424
+index 000000000..b2f242442
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-992-add-sctp-headers.patch
 @@ -0,0 +1,863 @@
@@ -24282,7 +24392,7 @@ index 0000000..b2f2424
 ++#endif /* _UAPI_SCTP_H */
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-993-add-btrfs-headers.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-993-add-btrfs-headers.patch
 new file mode 100644
-index 0000000..016c58f
+index 000000000..016c58fa7
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-993-add-btrfs-headers.patch
 @@ -0,0 +1,652 @@
@@ -24940,7 +25050,7 @@ index 0000000..016c58f
 ++#endif /* _UAPI_LINUX_BTRFS_H */
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-994-remove-aufs-headers-install.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-994-remove-aufs-headers-install.patch
 new file mode 100644
-index 0000000..9a5fdf9
+index 000000000..9a5fdf9ab
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-994-remove-aufs-headers-install.patch
 @@ -0,0 +1,12 @@
@@ -24958,7 +25068,7 @@ index 0000000..9a5fdf9
 +-header-y = aufs_type.h
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-995-CX24120-13Z_frontend.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-995-CX24120-13Z_frontend.patch
 new file mode 100644
-index 0000000..41d0f1d
+index 000000000..41d0f1d9d
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-995-CX24120-13Z_frontend.patch
 @@ -0,0 +1,1577 @@
@@ -26541,7 +26651,7 @@ index 0000000..41d0f1d
 + obj-$(CONFIG_DVB_DIB3000MB) += dib3000mb.o
 diff --git a/projects/Odroid_U2/patches/linux/ddfddf8/linux-999.03-mac80211-ignore-ECSA-in-probe-response-frames.patch b/projects/Odroid_U2/patches/linux/ddfddf8/linux-999.03-mac80211-ignore-ECSA-in-probe-response-frames.patch
 new file mode 100644
-index 0000000..e8674f9
+index 000000000..e8674f950
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/linux/ddfddf8/linux-999.03-mac80211-ignore-ECSA-in-probe-response-frames.patch
 @@ -0,0 +1,46 @@
@@ -26593,7 +26703,7 @@ index 0000000..e8674f9
 + 		changed |= BSS_CHANGED_QOS;
 diff --git a/projects/Odroid_U2/patches/u-boot/0000_u-boot_add-bootini-fat.patch b/projects/Odroid_U2/patches/u-boot/0000_u-boot_add-bootini-fat.patch
 new file mode 100644
-index 0000000..d9c37dc
+index 000000000..d9c37dc6e
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/u-boot/0000_u-boot_add-bootini-fat.patch
 @@ -0,0 +1,83 @@
@@ -26682,7 +26792,7 @@ index 0000000..d9c37dc
 ++);
 diff --git a/projects/Odroid_U2/patches/u-boot/0001_u-boot_add-bootini-autoboot.patch b/projects/Odroid_U2/patches/u-boot/0001_u-boot_add-bootini-autoboot.patch
 new file mode 100644
-index 0000000..56cf0a9
+index 000000000..56cf0a967
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/u-boot/0001_u-boot_add-bootini-autoboot.patch
 @@ -0,0 +1,23 @@
@@ -26711,7 +26821,7 @@ index 0000000..56cf0a9
 + 		"elif test -e mmc 0 zImage; then; " \
 diff --git a/projects/Odroid_U2/patches/xorg-server/xorg-server-0005-mali-swapbuffers-fix.patch b/projects/Odroid_U2/patches/xorg-server/xorg-server-0005-mali-swapbuffers-fix.patch
 new file mode 100644
-index 0000000..0c81b0c
+index 000000000..0c81b0c36
 --- /dev/null
 +++ b/projects/Odroid_U2/patches/xorg-server/xorg-server-0005-mali-swapbuffers-fix.patch
 @@ -0,0 +1,244 @@
